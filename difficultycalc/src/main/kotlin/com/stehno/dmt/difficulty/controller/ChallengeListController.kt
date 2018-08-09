@@ -1,5 +1,8 @@
-package dmt
+package com.stehno.dmt.difficulty.controller
 
+import com.stehno.dmt.difficulty.Store
+import com.stehno.dmt.difficulty.config.ViewResolver
+import com.stehno.dmt.difficulty.model.Challenger
 import javafx.event.ActionEvent
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.Dialog
@@ -30,7 +33,7 @@ class ChallengeListController(
     }
 
     fun addChallenger(event: ActionEvent) {
-        viewResolver.resolve<Dialog<Challenger>>("/challenger_dialog.fxml").showAndWait().ifPresent { chal ->
+        viewResolver.resolve<Dialog<Challenger>>("/ui/challenger_dialog.fxml").showAndWait().ifPresent { chal ->
             store.addChallenger(chal)
         }
     }
@@ -46,7 +49,7 @@ class ChallengeListController(
     fun editChallenger(event: ActionEvent?){
         val selected = challengerList.selectionModel.selectedItems.first()
 
-        val viewAndController = viewResolver.resolveAndController<Dialog<Challenger>, ChallengerDialogController>("/challenger_dialog.fxml")
+        val viewAndController = viewResolver.resolveAndController<Dialog<Challenger>, ChallengerDialogController>("/ui/challenger_dialog.fxml")
 
         viewAndController.second.populate(selected)
 

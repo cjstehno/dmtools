@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
-<HBox prefHeight="600" prefWidth="600" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dmt.MainController">
+<HBox prefHeight="600" prefWidth="600" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stehno.dmt.difficulty.controller.MainController">
     <fx:include source="challenge_list.fxml"/>
     <TableView fx:id="difficultyTable" HBox.hgrow="ALWAYS">
         <opaqueInsets>

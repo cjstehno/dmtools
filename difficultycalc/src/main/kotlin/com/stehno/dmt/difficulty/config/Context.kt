@@ -1,23 +1,30 @@
-package dmt
+package com.stehno.dmt.difficulty.config
 
+import com.stehno.dmt.difficulty.Store
+import com.stehno.dmt.difficulty.controller.ChallengeListController
+import com.stehno.dmt.difficulty.controller.ChallengerDialogController
+import com.stehno.dmt.difficulty.controller.MainController
 import javafx.fxml.FXMLLoader
-import javafx.stage.Stage
 
-class Context(private val primaryStage: Stage) {
+class Context {
 
-    private val objects = mutableMapOf<Class<*>, Any>()
+    val objects = mutableMapOf<Class<*>, Any>()
 
     init {
         val store = register(Store())
-        val viewResolver = ViewResolver(this)
+        val viewResolver = register(ViewResolver(this))
 
-        register(MainController(store))
+        register(MainController())
         register(ChallengeListController(store, viewResolver))
         register(ChallengerDialogController())
     }
 
     fun resolve(type: Class<*>): Any? {
         return objects[type]
+    }
+
+    inline fun <reified T> resolveFor(type: Class<T>): T {
+        return objects[type] as T
     }
 
     private fun <T : Any> register(obj: T): T {

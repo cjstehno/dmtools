@@ -1,5 +1,6 @@
-package dmt
+package com.stehno.dmt.difficulty
 
+import com.stehno.dmt.difficulty.model.Challenger
 import javafx.collections.FXCollections.observableArrayList
 import javafx.collections.FXCollections.unmodifiableObservableList
 import javafx.collections.ObservableList

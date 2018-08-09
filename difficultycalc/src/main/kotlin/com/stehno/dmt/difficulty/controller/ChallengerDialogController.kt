@@ -1,5 +1,6 @@
-package dmt
+package com.stehno.dmt.difficulty.controller
 
+import com.stehno.dmt.difficulty.model.Challenger
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.Dialog
@@ -14,7 +15,7 @@ class ChallengerDialogController {
 
     fun initialize() {
         challengerDialog.graphic = ImageView(
-            javaClass.getResource("/gargoyle.png").toString()
+            javaClass.getResource("/img/gargoyle.png").toString()
         )
 
         challengerDialog.setResultConverter { button ->

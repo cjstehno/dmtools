@@ -1,9 +1,10 @@
-package dmt
+package com.stehno.dmt.difficulty.controller
 
+import com.stehno.dmt.difficulty.model.Difficulty
 import javafx.collections.FXCollections
 import javafx.scene.control.TableView
 
-class MainController(private val store: Store) {
+class MainController {
 
     lateinit var difficultyTable: TableView<Difficulty>
 

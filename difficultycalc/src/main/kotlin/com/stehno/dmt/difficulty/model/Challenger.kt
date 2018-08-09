@@ -1,4 +1,4 @@
-package dmt
+package com.stehno.dmt.difficulty.model
 
 data class Challenger(val challenge: String, val count: Int) {
 
