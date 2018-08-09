@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import java.lang.String?>
+
+<Dialog xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="dmt.ChallengerDialogController"
+        title="Challenger"
+        fx:id="challengerDialog"
+        headerText="Enter challenger information">
+
+    <!-- TODO: why doesnt this work -->
+    <!--<graphic>-->
+    <!--<ImageView>-->
+    <!--<Image url="@gargoyle.png"/>-->
+    <!--</ImageView>-->
+    <!--</graphic>-->
+
+    <dialogPane>
+        <DialogPane>
+            <content>
+                <GridPane hgap="10.0" vgap="10.0">
+                    <padding>
+                        <Insets top="20" right="150" bottom="10" left="10"/>
+                    </padding>
+
+                    <Label text="CR:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <ChoiceBox fx:id="challengerCr" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="0"/>
+                                <String fx:value="1/8"/>
+                                <String fx:value="1/4"/>
+                                <String fx:value="1/2"/>
+                                <String fx:value="1"/>
+                                <String fx:value="2"/>
+                                <String fx:value="3"/>
+                                <String fx:value="4"/>
+                                <String fx:value="5"/>
+                                <String fx:value="6"/>
+                                <String fx:value="7"/>
+                                <String fx:value="8"/>
+                                <String fx:value="9"/>
+                                <String fx:value="10"/>
+                                <String fx:value="11"/>
+                                <String fx:value="12"/>
+                                <String fx:value="13"/>
+                                <String fx:value="14"/>
+                                <String fx:value="15"/>
+                                <String fx:value="16"/>
+                                <String fx:value="17"/>
+                                <String fx:value="18"/>
+                                <String fx:value="18"/>
+                                <String fx:value="19"/>
+                                <String fx:value="20"/>
+                                <String fx:value="21"/>
+                                <String fx:value="22"/>
+                                <String fx:value="23"/>
+                                <String fx:value="24"/>
+                                <String fx:value="25"/>
+                                <String fx:value="26"/>
+                                <String fx:value="27"/>
+                                <String fx:value="28"/>
+                                <String fx:value="29"/>
+                                <String fx:value="30"/>
+                            </FXCollections>
+                        </items>
+                    </ChoiceBox>
+
+                    <Label text="Count:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Spinner fx:id="challengerCount" GridPane.columnIndex="1" GridPane.rowIndex="1" editable="true">
+                        <valueFactory>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="50" initialValue="1"/>
+                        </valueFactory>
+                    </Spinner>
+
+                </GridPane>
+            </content>
+            <ButtonType fx:constant="OK"/>
+            <ButtonType fx:constant="CANCEL"/>
+        </DialogPane>
+    </dialogPane>
+
+</Dialog>
