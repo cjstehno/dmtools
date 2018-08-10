@@ -1,5 +1,8 @@
 package com.stehno.dmt.spellbooks.config
 
+import com.stehno.dmt.spellbooks.controller.MainController
+import com.stehno.dmt.spellbooks.controller.SpellListController
+import com.stehno.dmt.spellbooks.data.Store
 import javafx.fxml.FXMLLoader
 
 class Context {
@@ -7,13 +10,11 @@ class Context {
     val objects = mutableMapOf<Class<*>, Any>()
 
     init {
-//        val store = register(Store())
+        val store = register(Store())
         val viewResolver = register(ViewResolver(this))
 
-//        register(MainController())
-//        register(ChallengeListController(store, viewResolver))
-//        register(ChallengerDialogController())
-//        register(DifficultyTableController(store))
+        register(MainController())
+        register(SpellListController())
     }
 
     fun resolve(type: Class<*>): Any? {
