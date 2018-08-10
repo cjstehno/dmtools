@@ -21,6 +21,7 @@ class DifficultyCalculatorApplication : Application() {
 
         val scene = Scene(context.resolveFor(ViewResolver::class.java).resolve("/ui/main.fxml"))
 
+        stage.title = "Difficulty Calculator"
         stage.scene = scene
         stage.isResizable = false
         stage.icons.add(Image(javaClass.getResource("/img/battle-gear.png").toString()))

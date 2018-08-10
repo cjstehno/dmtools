@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns="http://javafx.com/javafx/8.0.121"
       xmlns:fx="http://javafx.com/fxml/1"
-      prefHeight="600" prefWidth="600"
+      prefHeight="620" prefWidth="600"
       fx:controller="com.stehno.dmt.difficulty.controller.MainController">
     <fx:include source="challenge_list.fxml"/>
     <fx:include source="difficulty_table.fxml"/>

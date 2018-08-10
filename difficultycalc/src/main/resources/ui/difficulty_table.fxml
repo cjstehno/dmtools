@@ -9,7 +9,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.stehno.dmt.difficulty.controller.DifficultyTableController"
            fx:id="difficultyTable"
-           HBox.hgrow="ALWAYS">
+           HBox.hgrow="ALWAYS" stylesheets="/css/difficulty_table.css">
     <opaqueInsets>
         <Insets/>
     </opaqueInsets>
@@ -17,12 +17,12 @@
         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
     </HBox.margin>
     <columns>
-        <TableColumn prefWidth="135.0" text="Level" resizable="false" sortable="false">
+        <TableColumn prefWidth="130.0" text="Level" resizable="false" sortable="false">
             <cellValueFactory>
                 <PropertyValueFactory property="level"/>
             </cellValueFactory>
         </TableColumn>
-        <TableColumn prefWidth="135.0" text="Difficulty" resizable="false" sortable="false">
+        <TableColumn prefWidth="130.0" text="Difficulty" resizable="false" sortable="false">
             <cellValueFactory>
                 <PropertyValueFactory property="rating"/>
             </cellValueFactory>

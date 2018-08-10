@@ -1,0 +1,24 @@
+#difficultyTable .table-column {
+  -fx-alignment: CENTER;
+}
+
+.separator-row {
+  -fx-background-color: #b1b1b1;
+  -fx-font-weight: bold;
+}
+
+.deadly {
+  -fx-background-color: #c20000;
+}
+
+.hard {
+  -fx-background-color: #d88d00;
+}
+
+.medium {
+  -fx-background-color: white;
+}
+
+.easy {
+  -fx-background-color: #00af00;
+}
