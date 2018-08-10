@@ -3,6 +3,7 @@ package com.stehno.dmt.difficulty.config
 import com.stehno.dmt.difficulty.Store
 import com.stehno.dmt.difficulty.controller.ChallengeListController
 import com.stehno.dmt.difficulty.controller.ChallengerDialogController
+import com.stehno.dmt.difficulty.controller.DifficultyTableController
 import com.stehno.dmt.difficulty.controller.MainController
 import javafx.fxml.FXMLLoader
 
@@ -17,6 +18,7 @@ class Context {
         register(MainController())
         register(ChallengeListController(store, viewResolver))
         register(ChallengerDialogController())
+        register(DifficultyTableController())
     }
 
     fun resolve(type: Class<*>): Any? {

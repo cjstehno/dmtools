@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<TableView xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.stehno.dmt.difficulty.controller.DifficultyTableController"
+           fx:id="difficultyTable"
+           HBox.hgrow="ALWAYS">
+    <opaqueInsets>
+        <Insets/>
+    </opaqueInsets>
+    <HBox.margin>
+        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+    </HBox.margin>
+    <columns>
+        <TableColumn prefWidth="135.0" text="Level" resizable="false" sortable="false">
+            <cellValueFactory>
+                <PropertyValueFactory property="level"/>
+            </cellValueFactory>
+        </TableColumn>
+        <TableColumn prefWidth="135.0" text="Difficulty" resizable="false" sortable="false">
+            <cellValueFactory>
+                <PropertyValueFactory property="rating"/>
+            </cellValueFactory>
+        </TableColumn>
+    </columns>
+</TableView>
