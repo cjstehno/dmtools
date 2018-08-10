@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.stehno.dmt.difficulty.controller.DifficultyColumnCellFactory?>
+<?import com.stehno.dmt.difficulty.controller.LevelColumnCellFactory?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.TableColumn?>
@@ -21,11 +23,17 @@
             <cellValueFactory>
                 <PropertyValueFactory property="level"/>
             </cellValueFactory>
+            <cellFactory>
+                <LevelColumnCellFactory/>
+            </cellFactory>
         </TableColumn>
         <TableColumn prefWidth="130.0" text="Difficulty" resizable="false" sortable="false">
             <cellValueFactory>
                 <PropertyValueFactory property="rating"/>
             </cellValueFactory>
+            <cellFactory>
+                <DifficultyColumnCellFactory/>
+            </cellFactory>
         </TableColumn>
     </columns>
 </TableView>
