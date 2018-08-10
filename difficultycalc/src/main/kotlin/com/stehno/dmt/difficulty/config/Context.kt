@@ -18,7 +18,7 @@ class Context {
         register(MainController())
         register(ChallengeListController(store, viewResolver))
         register(ChallengerDialogController())
-        register(DifficultyTableController())
+        register(DifficultyTableController(store))
     }
 
     fun resolve(type: Class<*>): Any? {

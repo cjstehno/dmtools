@@ -4,8 +4,6 @@ import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.util.Callback
 
-// S - Difficulty, T - Any
-
 class DifficultyColumnCellFactory<S, T> : Callback<TableColumn<S, T>, TableCell<S, T>> {
 
     override fun call(param: TableColumn<S, T>?): TableCell<S, T>? {
@@ -19,11 +17,12 @@ class DifficultyColumnCellFactory<S, T> : Callback<TableColumn<S, T>, TableCell<
                     else -> value
                 }
 
+                styleClass.clear()
                 styleClass.add(when (item) {
-                    "Deadly" -> "deadly"
-                    "Hard" -> "hard"
-                    "Medium" -> "medium"
-                    "Easy" -> "easy"
+                    "DEADLY" -> "deadly"
+                    "HARD" -> "hard"
+                    "MEDIUM" -> "medium"
+                    "EASY" -> "easy"
                     else -> "separator-row"
                 })
             }
@@ -44,6 +43,7 @@ class LevelColumnCellFactory<S, T> : Callback<TableColumn<S, T>, TableCell<S, T>
                     else -> value
                 }
 
+                styleClass.clear()
                 if (value.startsWith("Tier")) {
                     styleClass.add("separator-row")
                 }

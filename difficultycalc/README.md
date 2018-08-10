@@ -2,6 +2,8 @@
 
 > A simple encounter difficulty calculator based on the standard 5e suggested calculations.
 
+![alt text](difficultycalc-screen.png "Screenshot")
+
 > **WARNING:** This is **NOT** production-quality software - this is meant for my personal use - USE AT YOUR OWN RISK.
 
 ## Build
