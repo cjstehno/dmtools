@@ -1,5 +1,5 @@
 package com.stehno.dmt.spellbooks.dsl
 
-enum Caster {
+enum class Caster {
     BARD, CLERIC, DRUID, PALADIN, RANGER, SORCERER, WARLOCK, WIZARD
 }

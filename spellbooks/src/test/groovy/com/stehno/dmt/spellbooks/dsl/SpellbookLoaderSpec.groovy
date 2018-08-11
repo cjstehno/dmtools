@@ -4,8 +4,6 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-import java.util.concurrent.CompletableFuture
-
 class SpellbookLoaderSpec extends Specification {
 
     @Rule TemporaryFolder folder = new TemporaryFolder()
@@ -55,6 +53,6 @@ class SpellbookLoaderSpec extends Specification {
             
             **At higher level.** This spell’s damage increases by 1d6 when you reach 5th level (2d6), 
             11th level (3d6), and 17th level (4d6).
-        '''.stripIndent()
+        '''.stripIndent().trim()
     }
 }

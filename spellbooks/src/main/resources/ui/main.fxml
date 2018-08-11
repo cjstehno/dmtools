@@ -10,9 +10,6 @@
     <top>
         <MenuBar>
             <Menu text="File">
-                <MenuItem text="Open..."/>
-                <MenuItem text="Save"/>
-                <SeparatorMenuItem />
                 <MenuItem text="Import..." onAction="#onImport" />
                 <MenuItem text="Export..." />
                 <MenuItem text="Generate..." />

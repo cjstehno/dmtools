@@ -6,6 +6,7 @@ import com.stehno.dmt.spellbooks.controller.SpellListController
 import com.stehno.dmt.spellbooks.data.Store
 import com.stehno.dmt.spellbooks.event.EventBus
 import javafx.fxml.FXMLLoader
+import java.io.File
 
 class Context {
 
@@ -13,7 +14,10 @@ class Context {
 
     init {
         val eventBus = EventBus()
-        val store = register(Store())
+        val store = register(Store(
+            // FIXME: remove when dev done (will be in-memory now)
+//            File("${System.getProperty("user.home")}/.dmtools", "spellbooks")
+        ))
         val viewResolver = register(ViewResolver(this))
 
         register(MainController(viewResolver))
