@@ -4,6 +4,8 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
+import java.util.concurrent.CompletableFuture
+
 class SpellbookLoaderSpec extends Specification {
 
     @Rule TemporaryFolder folder = new TemporaryFolder()
@@ -34,7 +36,7 @@ class SpellbookLoaderSpec extends Specification {
         '''
 
         when:
-        Spellbook spellbook = SpellbookLoader.load(file)
+        Spellbook spellbook = SpellbookLoader.load(file).get()
 
         then:
         spellbook.title == 'Zoldeck\'s Tome of Wonders'

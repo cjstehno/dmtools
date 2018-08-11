@@ -1,10 +1,11 @@
 package com.stehno.dmt.spellbooks.controller
 
-import com.stehno.dmt.spellbooks.dsl.SpellbookLoader
+import com.stehno.dmt.spellbooks.config.ViewResolver
 import javafx.event.ActionEvent
+import javafx.scene.control.Dialog
 import javafx.stage.FileChooser
 
-class MainController {
+class MainController(private val viewResolver: ViewResolver) {
 
     fun initialize() {
 
@@ -16,12 +17,10 @@ class MainController {
             selectedExtensionFilter = FileChooser.ExtensionFilter("Spellbooks", mutableListOf("*.tome", "*.codex"))
         }.showOpenDialog(null)
 
-        // TODO: run this on a separate thread to allow UI to continue
-
-        if( selectedFile.extension in listOf("tome", "codex")){
-            val spellbook = SpellbookLoader.load(selectedFile)
-            // TODO: a progress screen with scrolling list of spells as loaded...
-            println("Loaded ${spellbook.spells.size} spells from ${spellbook.title}.")
+        if (selectedFile.extension in listOf("tome", "codex")) {
+            val viewAndController = viewResolver.resolveAndController<Dialog<Void>, ImportProgressDialogController>("/ui/import_progress_dialog.fxml")
+            viewAndController.second.load(selectedFile)
+            viewAndController.first.showAndWait()
         }
     }
 }

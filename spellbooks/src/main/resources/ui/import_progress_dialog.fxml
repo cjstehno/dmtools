@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.Dialog?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<Dialog xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="com.stehno.dmt.spellbooks.controller.ImportProgressDialogController"
+        title="Importing..."
+        fx:id="importProgressDialog"
+        headerText="Importing spells...">
+
+    <dialogPane>
+        <DialogPane>
+            <content>
+                <VBox>
+                    <ProgressBar fx:id="progressBar" prefWidth="600" />
+                    <TextArea fx:id="progressText" />
+                </VBox>
+            </content>
+            <ButtonType fx:constant="CLOSE"/>
+        </DialogPane>
+    </dialogPane>
+</Dialog>
