@@ -1,62 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
+<?import com.stehno.dmt.spellbooks.ui.BooleanCellFactory?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<VBox prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stehno.dmt.spellbooks.controller.SpellListController">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<VBox prefHeight="200.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stehno.dmt.spellbooks.controller.SpellListController">
     <HBox.margin>
-        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
     </HBox.margin>
-   <HBox prefWidth="400.0">
-      <children>
-          <ChoiceBox value="All Levels">
-              <items>
-                  <FXCollections fx:factory="observableArrayList">
-                      <String fx:value="All Levels" />
-                      <String fx:value="Cantrips" />
-                      <String fx:value="First Level" />
-                      <String fx:value="Second Level" />
-                      <String fx:value="Third Level" />
-                      <String fx:value="Fourth Level" />
-                      <String fx:value="Fifth Level" />
-                      <String fx:value="Sixth Level" />
-                      <String fx:value="Seventh Level" />
-                      <String fx:value="Eighth Level" />
-                      <String fx:value="Ninth Level" />
-                  </FXCollections>
-              </items>
+    <HBox prefWidth="500.0">
+        <ChoiceBox value="All Levels">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="All Levels"/>
+                    <String fx:value="Cantrips"/>
+                    <String fx:value="First Level"/>
+                    <String fx:value="Second Level"/>
+                    <String fx:value="Third Level"/>
+                    <String fx:value="Fourth Level"/>
+                    <String fx:value="Fifth Level"/>
+                    <String fx:value="Sixth Level"/>
+                    <String fx:value="Seventh Level"/>
+                    <String fx:value="Eighth Level"/>
+                    <String fx:value="Ninth Level"/>
+                </FXCollections>
+            </items>
             <HBox.margin>
-               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </HBox.margin>
-          </ChoiceBox>
-          <ChoiceBox value="Any School" HBox.hgrow="ALWAYS">
+        </ChoiceBox>
+        <ChoiceBox value="Any School">
             <HBox.margin>
-               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </HBox.margin>
-              <items>
-                  <FXCollections fx:factory="observableArrayList">
-                      <String fx:value="Any School" />
-                      <String fx:value="Abjuration" />
-                      <String fx:value="Conjuration" />
-                      <String fx:value="Divination" />
-                      <String fx:value="Enchantment" />
-                      <String fx:value="Evocation" />
-                      <String fx:value="Illusion" />
-                      <String fx:value="Necromancy" />
-                      <String fx:value="Transmutation" />
-                  </FXCollections>
-              </items>
-          </ChoiceBox>
-      </children>
-   </HBox>
-    <ListView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Any School"/>
+                    <String fx:value="Abjuration"/>
+                    <String fx:value="Conjuration"/>
+                    <String fx:value="Divination"/>
+                    <String fx:value="Enchantment"/>
+                    <String fx:value="Evocation"/>
+                    <String fx:value="Illusion"/>
+                    <String fx:value="Necromancy"/>
+                    <String fx:value="Transmutation"/>
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+        <ChoiceBox value="Any Caster" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </HBox.margin>
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Any Caster"/>
+                    <String fx:value="Bard"/>
+                    <String fx:value="Cleric"/>
+                    <String fx:value="Druid"/>
+                    <String fx:value="Paladin"/>
+                    <String fx:value="Ranger"/>
+                    <String fx:value="Sorcerer"/>
+                    <String fx:value="Warlock"/>
+                    <String fx:value="Wizard"/>
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+    </HBox>
+    <TableView fx:id="spellTable" VBox.vgrow="ALWAYS">
         <VBox.margin>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
         </VBox.margin>
-    </ListView>
+        <opaqueInsets>
+            <Insets/>
+        </opaqueInsets>
+        <HBox.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+        </HBox.margin>
+        <columns>
+            <TableColumn prefWidth="60.0" text="Level" resizable="false">
+                <cellValueFactory>
+                    <PropertyValueFactory property="level"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn prefWidth="160.0" text="Name" resizable="false" sortable="false">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn prefWidth="130.0" text="School" resizable="false" sortable="false">
+                <cellValueFactory>
+                    <PropertyValueFactory property="school"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn prefWidth="100.0" text="Ritual?" resizable="false" sortable="false">
+                <cellValueFactory>
+                    <PropertyValueFactory property="ritual"/>
+                </cellValueFactory>
+                <cellFactory>
+                    <BooleanCellFactory/>
+                </cellFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
 </VBox>

@@ -1,7 +1,6 @@
 package com.stehno.dmt.spellbooks.event
 
-import groovy.transform.CompileStatic
-import groovy.transform.Immutable
+
 import spock.lang.Specification
 
 import java.util.concurrent.CountDownLatch
@@ -14,40 +13,33 @@ class EventBusSpec extends Specification {
         setup:
         boolean fired = false
         String payload = null
-        eventBus.subscribe(TestEvent){ evt ->
+        eventBus.subscribe('testing') { evt ->
             fired = true
-            payload = evt.payload
         }
 
         when:
-        eventBus.publish(new TestEvent('one'))
+        eventBus.publish(new Event('one'))
 
         then:
         fired
         payload == 'one'
     }
 
-    def 'pub-sub (async)'(){
+    def 'pub-sub (async)'() {
         setup:
         CountDownLatch latch = new CountDownLatch(1)
 
-        String payload = null
-        eventBus.subscribe(TestEvent){ evt->
-            payload = evt.payload
+        boolean fired = false
+        eventBus.subscribe(TestEvent) { evt ->
+            fired = true
             latch.countDown()
         }
 
         when:
-        eventBus.publishAsync(new TestEvent('two'))
+        eventBus.publishAsync(new Event('two'))
 
         then:
         latch.await()
-        payload == 'two'
+        fired
     }
-}
-
-@CompileStatic @Immutable
-class TestEvent implements Event {
-
-    String payload
 }

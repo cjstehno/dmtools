@@ -1,10 +1,13 @@
 package com.stehno.dmt.spellbooks.dsl
 
-enum class SpellLevel(val level: Int) {
+enum class SpellLevel(val level: Int, val label: String) {
 
-    CANTRIP(0), FIRST(1), SECOND(2), THIRD(3), FOURTH(4), FIFTH(5), SIXTH(6), SEVENTH(7), EIGHTH(8), NINTH(9);
+    CANTRIP(0, "Cantrip"), FIRST(1, "1st"), SECOND(2, "2nd"),
+    THIRD(3, "3rd"), FOURTH(4, "4th"), FIFTH(5, "5th"),
+    SIXTH(6, "6th"), SEVENTH(7, "7th"), EIGHTH(8, "8th"),
+    NINTH(9, "9th");
 
-    override fun toString() = name.toLowerCase()
+    override fun toString() = label
 
     companion object {
         fun from(level: Int): SpellLevel {

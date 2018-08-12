@@ -4,6 +4,7 @@ import com.stehno.dmt.spellbooks.controller.ImportProgressDialogController
 import com.stehno.dmt.spellbooks.controller.MainController
 import com.stehno.dmt.spellbooks.controller.SpellListController
 import com.stehno.dmt.spellbooks.data.Store
+import com.stehno.dmt.spellbooks.data.StoreService
 import com.stehno.dmt.spellbooks.event.EventBus
 import javafx.fxml.FXMLLoader
 import java.io.File
@@ -14,15 +15,20 @@ class Context {
 
     init {
         val eventBus = EventBus()
-        val store = register(Store(
-            // FIXME: remove when dev done (will be in-memory now)
-//            File("${System.getProperty("user.home")}/.dmtools", "spellbooks")
-        ))
+        val store = register(Store(storageDirectory()))
         val viewResolver = register(ViewResolver(this))
+        val storeService = StoreService(store, eventBus)
 
         register(MainController(viewResolver))
-        register(SpellListController())
-        register(ImportProgressDialogController())
+        register(SpellListController(storeService, eventBus))
+        register(ImportProgressDialogController(storeService))
+    }
+
+    private fun storageDirectory(): File {
+        // FIXME: allow for specification on command line
+        val file = File("${System.getProperty("user.home")}/.dmtools", "spellbooks.db")
+        file.parentFile.mkdirs()
+        return file
     }
 
     fun resolve(type: Class<*>): Any? {

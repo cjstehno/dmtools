@@ -10,13 +10,14 @@ import java.io.File
 class Store(private val dbFile: File? = null) {
 
     private val db: Nitrite = nitrite {
-        if (dbFile != null) {
+//        if (dbFile != null) {
             file = dbFile
-        }
+//        }
         autoCommitBufferSize = 2048
         compress = true
         autoCompact = false
     }
+
     private val spellRepo = db.getRepository(Spell::class.java)
 
     fun addSpell(spell: Spell) {

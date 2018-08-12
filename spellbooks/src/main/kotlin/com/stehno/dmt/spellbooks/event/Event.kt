@@ -1,4 +1,8 @@
 package com.stehno.dmt.spellbooks.event
 
-interface Event {
+import com.stehno.dmt.spellbooks.data.Events
+
+data class Event(val id: String) {
+
+    constructor(ident: Events) : this(ident.id)
 }
