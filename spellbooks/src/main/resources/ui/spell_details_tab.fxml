@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+<Tab xmlns="http://javafx.com/javafx"
+     xmlns:fx="http://javafx.com/fxml"
+     fx:id="detailTab"
+     fx:controller="com.stehno.dmt.spellbooks.controller.SpellDetailsTabController">
+    <VBox prefWidth="100.0">
+        <WebView fx:id="spellDetails" VBox.vgrow="ALWAYS">
+            <VBox.margin>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </VBox.margin>
+        </WebView>
+    </VBox>
+</Tab>

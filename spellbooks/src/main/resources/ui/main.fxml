@@ -21,21 +21,7 @@
     <center>
         <HBox>
             <fx:include source="spell_list.fxml"/>
-            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
-                <HBox.margin>
-                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
-                </HBox.margin>
-                <Tab text="Untitled Tab 1">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
-                    </content>
-                </Tab>
-                <Tab text="Untitled Tab 2">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
-                    </content>
-                </Tab>
-            </TabPane>
+            <fx:include source="spell_display_container.fxml"/>
         </HBox>
     </center>
 </BorderPane>

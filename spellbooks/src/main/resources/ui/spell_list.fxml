@@ -69,7 +69,7 @@
             </items>
         </ChoiceBox>
     </HBox>
-    <TableView fx:id="spellTable" VBox.vgrow="ALWAYS">
+    <TableView fx:id="spellTable" VBox.vgrow="ALWAYS" onMouseClicked="#onTableClicked">
         <VBox.margin>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
         </VBox.margin>

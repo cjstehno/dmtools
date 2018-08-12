@@ -1,8 +1,6 @@
 package com.stehno.dmt.spellbooks.config
 
-import com.stehno.dmt.spellbooks.controller.ImportProgressDialogController
-import com.stehno.dmt.spellbooks.controller.MainController
-import com.stehno.dmt.spellbooks.controller.SpellListController
+import com.stehno.dmt.spellbooks.controller.*
 import com.stehno.dmt.spellbooks.data.Store
 import com.stehno.dmt.spellbooks.data.StoreService
 import com.stehno.dmt.spellbooks.event.EventBus
@@ -22,6 +20,8 @@ class Context {
         register(MainController(viewResolver))
         register(SpellListController(storeService, eventBus))
         register(ImportProgressDialogController(storeService))
+        register(SpellDisplayContainerController())
+        register(SpellDetailsTabController())
     }
 
     private fun storageDirectory(): File {
