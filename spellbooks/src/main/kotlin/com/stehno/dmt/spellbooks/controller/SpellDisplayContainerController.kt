@@ -17,6 +17,7 @@ class SpellDisplayContainerController(val eventBus: EventBus, val viewResolver: 
 
             val tabAndController = viewResolver.resolveAndController<Tab, SpellDetailsTabController>("/ui/spell_details_tab.fxml")
             tabAndController.second.spell(spell)
+            tabAndController.first.isClosable = true // TODO: how to add button
             tabPane.tabs.add(tabAndController.first)
             tabPane.selectionModel.select(tabAndController.first)
         }

@@ -23,7 +23,7 @@ class SpellbooksApplication : Application() {
 
         stage.title = "Spellbooks"
         stage.scene = scene
-        stage.isResizable = false
+        stage.isResizable = true
         stage.icons.add(Image(javaClass.getResource("/img/book-cover.png").toString()))
         stage.show()
     }
