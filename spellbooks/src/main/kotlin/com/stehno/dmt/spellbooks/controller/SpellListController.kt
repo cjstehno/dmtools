@@ -14,10 +14,9 @@ class SpellListController(private val storeService: StoreService, private val ev
 
     fun initialize() {
         // TODO: support sorting (resizing cols?)
-        // TODO: allow app resizing?
+        // TODO: add ability to add more columns (or select visible - save as pref)
 
         spellTable.items = storeService.listSpells()
-
 
         eventBus.subscribe(Events.SPELLS_CHANGED) { evt ->
             // update the table content

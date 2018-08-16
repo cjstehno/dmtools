@@ -11,13 +11,18 @@ class SpellDisplayContainerController(val eventBus: EventBus, val viewResolver: 
 
     lateinit var tabPane: TabPane
 
+    // FIXME: add a "no spells" default compnent when there are no spell tabs open
+
     fun initialize() {
         eventBus.subscribe(Events.SHOW_SPELL_DETAILS) { evt ->
             val spell = storeService.fetchSpell(evt.payload.get("key").toString())
 
             val tabAndController = viewResolver.resolveAndController<Tab, SpellDetailsTabController>("/ui/spell_details_tab.fxml")
             tabAndController.second.spell(spell)
-            tabAndController.first.isClosable = true // TODO: how to add button
+
+            tabPane.tabClosingPolicy = TabPane.TabClosingPolicy.SELECTED_TAB
+            tabAndController.first.isClosable = true
+
             tabPane.tabs.add(tabAndController.first)
             tabPane.selectionModel.select(tabAndController.first)
         }
