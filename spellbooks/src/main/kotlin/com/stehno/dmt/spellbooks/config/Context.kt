@@ -20,7 +20,7 @@ class Context {
         register(MainController(viewResolver))
         register(SpellListController(storeService, eventBus))
         register(ImportProgressDialogController(storeService))
-        register(SpellDisplayContainerController())
+        register(SpellDisplayContainerController(eventBus, viewResolver, storeService))
         register(SpellDetailsTabController())
     }
 

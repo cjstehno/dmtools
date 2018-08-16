@@ -3,6 +3,7 @@ package com.stehno.dmt.spellbooks.data
 import com.stehno.dmt.spellbooks.dsl.Spell
 import org.dizitart.kno2.nitrite
 import org.dizitart.no2.Nitrite
+import org.dizitart.no2.objects.filters.ObjectFilters
 import java.io.File
 
 // TODO: allow override of database location on command line
@@ -10,8 +11,8 @@ import java.io.File
 class Store(private val dbFile: File? = null) {
 
     private val db: Nitrite = nitrite {
-//        if (dbFile != null) {
-            file = dbFile
+        //        if (dbFile != null) {
+        file = dbFile
 //        }
         autoCommitBufferSize = 2048
         compress = true
@@ -30,5 +31,9 @@ class Store(private val dbFile: File? = null) {
 
     fun shutdown() {
         db.close()
+    }
+
+    fun retrieve(key: String): Spell {
+        return spellRepo.find(ObjectFilters.eq("key", key)).first()
     }
 }

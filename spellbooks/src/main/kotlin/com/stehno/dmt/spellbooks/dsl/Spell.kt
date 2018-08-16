@@ -32,7 +32,7 @@ data class Spell(
     companion object {
         @JvmStatic
         fun spell(bookTitle: String, @DelegatesTo(Spell::class) closure: Closure<Void>): Spell {
-            val spell = Spell(bookTitle)
+            val spell = Spell(book = bookTitle)
             closure.delegate = spell
             closure.call()
 

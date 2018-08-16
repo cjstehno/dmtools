@@ -1,18 +1,28 @@
 package com.stehno.dmt.spellbooks.controller
 
+import com.stehno.dmt.spellbooks.dsl.Spell
+import groovy.text.GStringTemplateEngine
 import javafx.scene.control.Tab
 import javafx.scene.web.WebView
+import org.asciidoctor.Asciidoctor
 
 class SpellDetailsTabController {
 
     lateinit var detailTab: Tab
     lateinit var spellDetails: WebView
 
-    fun initialize() {
-        val spellName = "Animate Objects"
-        val contentUrl = SpellDetailsTabController::class.java.getResource("/ui/spell_details.html").toString()
+    private val template = GStringTemplateEngine().createTemplate(SpellDetailsTabController::class.java.getResource("/ui/spell_details.html"))
+    private val asciidoctor = Asciidoctor.Factory.create()
 
-        detailTab.text = spellName
-        spellDetails.engine.load(contentUrl)
+    fun initialize() {
+        detailTab.text = "Loading..."
+    }
+
+    fun spell(spell: Spell) {
+        detailTab.text = spell.name
+        spellDetails.engine.loadContent(
+            template.make(mutableMapOf("spell" to spell, "adoc" to asciidoctor)).toString(),
+            "text/html"
+        )
     }
 }

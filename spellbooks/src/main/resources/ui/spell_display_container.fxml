@@ -4,9 +4,9 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.HBox?>
 <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+         fx:id="tabPane"
          fx:controller="com.stehno.dmt.spellbooks.controller.SpellDisplayContainerController">
     <HBox.margin>
         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
     </HBox.margin>
-    <fx:include source="spell_details_tab.fxml"/>
 </TabPane>

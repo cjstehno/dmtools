@@ -22,8 +22,13 @@ class StoreService(private val store: Store, private val eventBus: EventBus) {
     fun listSpells(): ObservableList<Spell> {
         return unmodifiableObservableList<Spell>(observableArrayList(store.listSpells()))
     }
+
+    fun fetchSpell(key: String): Spell {
+        return store.retrieve(key)
+    }
 }
 
 enum class Events(val id: String) {
-    SPELLS_CHANGED("spells-changed")
+    SPELLS_CHANGED("spells-changed"),
+    SHOW_SPELL_DETAILS("show-spell-details")
 }
