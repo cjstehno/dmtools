@@ -3,6 +3,7 @@ package com.stehno.dmt.spellbooks.controller
 import com.stehno.dmt.spellbooks.data.StoreService
 import com.stehno.dmt.spellbooks.dsl.Spellbook
 import com.stehno.dmt.spellbooks.dsl.SpellbookLoader
+import com.stehno.dmt.spellbooks.event.EventBus
 import javafx.application.Platform
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
@@ -12,7 +13,7 @@ import javafx.scene.image.ImageView
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
-class ImportProgressDialogController(private val storeService: StoreService) {
+class ImportProgressDialogController(private val storeService: StoreService, private val eventBus: EventBus) {
 
     lateinit var importProgressDialog: Dialog<Void>
     lateinit var progressBar: ProgressBar

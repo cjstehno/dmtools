@@ -10,7 +10,7 @@ import javafx.collections.ObservableList
 class StoreService(private val store: Store, private val eventBus: EventBus) {
 
     fun importSpell(spell: Spell) {
-        // TODO: check for exising?
+        // TODO: check for existing?
         store.addSpell(spell)
     }
 
@@ -19,16 +19,19 @@ class StoreService(private val store: Store, private val eventBus: EventBus) {
         eventBus.publish(Event(Events.SPELLS_CHANGED))
     }
 
-    fun listSpells(): ObservableList<Spell> {
-        return unmodifiableObservableList<Spell>(observableArrayList(store.listSpells()))
+    fun listSpells(filters: SpellFilter = SpellFilter()): ObservableList<Spell> {
+        return unmodifiableObservableList<Spell>(observableArrayList(store.listSpells(filters)))
     }
 
-    fun fetchSpell(key: String): Spell {
-        return store.retrieve(key)
-    }
+    fun fetchSpell(key: String): Spell = store.retrieve(key)
+
+    fun count(): Int = store.count()
+
+    fun listBooks(): Set<String> = store.listBooks()
 }
 
 enum class Events(val id: String) {
     SPELLS_CHANGED("spells-changed"),
-    SHOW_SPELL_DETAILS("show-spell-details")
+    SHOW_SPELL_DETAILS("show-spell-details"),
+    BOOK_TOGGLED("book-toggled")
 }

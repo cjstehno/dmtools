@@ -1,6 +1,7 @@
 package com.stehno.dmt.spellbooks.controller
 
 import com.stehno.dmt.spellbooks.data.Events
+import com.stehno.dmt.spellbooks.data.SpellFilter
 import com.stehno.dmt.spellbooks.data.StoreService
 import com.stehno.dmt.spellbooks.dsl.Caster
 import com.stehno.dmt.spellbooks.dsl.School
@@ -9,12 +10,12 @@ import com.stehno.dmt.spellbooks.dsl.SpellLevel
 import com.stehno.dmt.spellbooks.event.Event
 import com.stehno.dmt.spellbooks.event.EventBus
 import javafx.collections.FXCollections.observableArrayList
-import javafx.event.ActionEvent
 import javafx.scene.control.ChoiceBox
+import javafx.scene.control.Label
 import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.input.MouseEvent
 import javafx.util.StringConverter
-import java.util.function.Predicate
 
 class SpellListController(private val storeService: StoreService, private val eventBus: EventBus) {
 
@@ -24,11 +25,12 @@ class SpellListController(private val storeService: StoreService, private val ev
     lateinit var levelFilter: ChoiceBox<SpellLevel>
     lateinit var schoolFilter: ChoiceBox<School>
     lateinit var casterFilter: ChoiceBox<Caster>
+    lateinit var searchFilter: TextField
+    lateinit var footerLabel: Label
     lateinit var spellTable: TableView<Spell>
 
-    private var levelPredicate: Predicate<Spell> = SpellLevelPredicate.ALL_LEVELS
-    private var schoolPredicate: Predicate<Spell> = SchoolPredicate.ALL_SCHOOLS
-    private var casterPredicate: Predicate<Spell> = CasterPredicate.ALL_CASTERS
+    private var searchString = ""
+    private val books = mutableMapOf<String, Boolean>()
 
     fun initialize() {
         levelFilter.items = observableArrayList(listOf(null, *SpellLevel.values()))
@@ -40,46 +42,39 @@ class SpellListController(private val storeService: StoreService, private val ev
         casterFilter.items = observableArrayList(listOf(null, *Caster.values()))
         casterFilter.selectionModel.select(0)
 
+        searchFilter.textProperty().addListener { observable, oldValue, newValue ->
+            searchString = newValue
+            updateItems()
+        }
+
+        storeService.listBooks().forEach { book ->
+            books[book] = true
+        }
+
+        eventBus.subscribe(Events.BOOK_TOGGLED) { evt ->
+            books[evt.payload["book"].toString()] = evt.payload["enabled"] as Boolean
+            updateItems()
+        }
+
         updateItems()
 
         eventBus.subscribe(Events.SPELLS_CHANGED) { evt ->
-            // update the table content
-            spellTable.items = storeService.listSpells()
+            updateItems()
         }
     }
 
-    private fun updateItems() {
-        spellTable.items = storeService.listSpells()
-            .filtered(levelPredicate)
-            .filtered(schoolPredicate)
-            .filtered(casterPredicate)
-    }
+    fun updateItems() {
+        val enabledBooks = books.filter { ent-> ent.value }.map { ent-> ent.key }
 
-    fun onLevelFilterSelected(evt: ActionEvent) {
-        val selected = levelFilter.selectionModel.selectedItem
-        levelPredicate = when (selected) {
-            null -> SpellLevelPredicate.ALL_LEVELS
-            else -> SpellLevelPredicate(selected)
-        }
-        updateItems()
-    }
+        spellTable.items = storeService.listSpells(SpellFilter(
+            levelFilter.selectionModel.selectedItem,
+            schoolFilter.selectionModel.selectedItem,
+            casterFilter.selectionModel.selectedItem,
+            searchString,
+            enabledBooks
+        ))
 
-    fun onSchoolFilterSelected(evt: ActionEvent) {
-        val selected = schoolFilter.selectionModel.selectedItem
-        schoolPredicate = when (selected) {
-            null -> SchoolPredicate.ALL_SCHOOLS
-            else -> SchoolPredicate(selected)
-        }
-        updateItems()
-    }
-
-    fun onCasterFilterSelected(evt: ActionEvent) {
-        val selected = casterFilter.selectionModel.selectedItem
-        casterPredicate = when (selected) {
-            null -> CasterPredicate.ALL_CASTERS
-            else -> CasterPredicate(selected)
-        }
-        updateItems()
+        footerLabel.text = "Showing ${spellTable.items.size} of ${storeService.count()} spells"
     }
 
     fun onTableClicked(me: MouseEvent) {
@@ -87,42 +82,6 @@ class SpellListController(private val storeService: StoreService, private val ev
             val selectedSpell = spellTable.selectionModel.selectedItem
             eventBus.publish(Event(Events.SHOW_SPELL_DETAILS, mapOf(Pair("key", selectedSpell.key))))
         }
-    }
-}
-
-class SpellLevelPredicate(private val selectedLevel: SpellLevel?) : Predicate<Spell> {
-
-    companion object {
-        val ALL_LEVELS = SpellLevelPredicate(null)
-    }
-
-    override fun test(spell: Spell) = when (selectedLevel) {
-        null -> true
-        else -> spell.level == selectedLevel
-    }
-}
-
-class SchoolPredicate(private val selectedSchool: School?) : Predicate<Spell> {
-
-    companion object {
-        val ALL_SCHOOLS = SchoolPredicate(null)
-    }
-
-    override fun test(spell: Spell) = when (selectedSchool) {
-        null -> true
-        else -> spell.school == selectedSchool
-    }
-}
-
-class CasterPredicate(private val selectedCaster: Caster?) : Predicate<Spell> {
-
-    companion object {
-        val ALL_CASTERS = CasterPredicate(null)
-    }
-
-    override fun test(spell: Spell) = when (selectedCaster) {
-        null -> true
-        else -> spell.casters!!.contains(selectedCaster)
     }
 }
 

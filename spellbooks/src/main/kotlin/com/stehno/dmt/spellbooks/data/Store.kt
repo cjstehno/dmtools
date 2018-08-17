@@ -25,8 +25,8 @@ class Store(private val dbFile: File? = null) {
         spellRepo.insert(spell)
     }
 
-    fun listSpells(): List<Spell> {
-        return spellRepo.find().toList()
+    fun listSpells(spellFilter: SpellFilter = SpellFilter()): List<Spell> {
+        return spellRepo.find(spellFilter.toObjectFilter()).toList()
     }
 
     fun shutdown() {
@@ -35,5 +35,13 @@ class Store(private val dbFile: File? = null) {
 
     fun retrieve(key: String): Spell {
         return spellRepo.find(ObjectFilters.eq("key", key)).first()
+    }
+
+    fun count(): Int {
+        return spellRepo.find().size()
+    }
+
+    fun listBooks(): Set<String> {
+        return spellRepo.find().map { s -> s.book!! }.toSet()
     }
 }

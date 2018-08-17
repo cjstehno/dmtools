@@ -4,74 +4,98 @@
 <?import com.stehno.dmt.spellbooks.controller.SchoolStringConverter?>
 <?import com.stehno.dmt.spellbooks.controller.SpellLevelStringConverter?>
 <?import com.stehno.dmt.spellbooks.ui.BooleanCellFactory?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 <VBox prefHeight="200.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stehno.dmt.spellbooks.controller.SpellListController">
     <HBox.margin>
-        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
     </HBox.margin>
     <HBox prefWidth="500.0">
-        <ChoiceBox fx:id="levelFilter" onAction="#onLevelFilterSelected">
+        <ChoiceBox fx:id="levelFilter" onAction="#updateItems">
             <HBox.margin>
-                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
             </HBox.margin>
             <converter>
-                <SpellLevelStringConverter/>
+                <SpellLevelStringConverter />
             </converter>
         </ChoiceBox>
-        <ChoiceBox fx:id="schoolFilter" onAction="#onSchoolFilterSelected">
+        <ChoiceBox fx:id="schoolFilter" onAction="#updateItems">
             <HBox.margin>
-                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
             </HBox.margin>
             <converter>
-                <SchoolStringConverter/>
+                <SchoolStringConverter />
             </converter>
         </ChoiceBox>
-        <ChoiceBox fx:id="casterFilter" HBox.hgrow="ALWAYS" onAction="#onCasterFilterSelected">
+        <ChoiceBox fx:id="casterFilter" onAction="#updateItems" HBox.hgrow="ALWAYS">
             <HBox.margin>
-                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
             </HBox.margin>
             <converter>
-                <CasterStringConverter/>
+                <CasterStringConverter />
             </converter>
         </ChoiceBox>
     </HBox>
-    <TableView fx:id="spellTable" VBox.vgrow="ALWAYS" onMouseClicked="#onTableClicked">
+    <HBox>
+        <TextField fx:id="searchFilter" promptText="Search..." HBox.hgrow="ALWAYS">
+           <HBox.margin>
+               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+           </HBox.margin>
+        </TextField>
+    </HBox>
+    <TableView fx:id="spellTable" onMouseClicked="#onTableClicked" VBox.vgrow="ALWAYS">
         <VBox.margin>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
         </VBox.margin>
         <opaqueInsets>
-            <Insets/>
+            <Insets />
         </opaqueInsets>
         <HBox.margin>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
         </HBox.margin>
         <columns>
-            <TableColumn prefWidth="60.0" text="Level" resizable="false">
+            <TableColumn prefWidth="60.0" resizable="false" text="Level">
                 <cellValueFactory>
-                    <PropertyValueFactory property="level"/>
+                    <PropertyValueFactory property="level" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn prefWidth="160.0" text="Name" resizable="false" sortable="false">
+            <TableColumn prefWidth="160.0" resizable="false" sortable="false" text="Name">
                 <cellValueFactory>
-                    <PropertyValueFactory property="name"/>
+                    <PropertyValueFactory property="name" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn prefWidth="130.0" text="School" resizable="false" sortable="false">
+            <TableColumn prefWidth="130.0" resizable="false" sortable="false" text="School">
                 <cellValueFactory>
-                    <PropertyValueFactory property="school"/>
+                    <PropertyValueFactory property="school" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn prefWidth="100.0" text="Ritual?" resizable="false" sortable="false">
+            <TableColumn prefWidth="100.0" resizable="false" sortable="false" text="Ritual?">
                 <cellValueFactory>
-                    <PropertyValueFactory property="ritual"/>
+                    <PropertyValueFactory property="ritual" />
                 </cellValueFactory>
                 <cellFactory>
-                    <BooleanCellFactory/>
+                    <BooleanCellFactory />
                 </cellFactory>
             </TableColumn>
         </columns>
     </TableView>
+    <HBox>
+        <Label fx:id="footerLabel" text="Showing X of Y spells" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+           <HBox.margin>
+               <Insets left="2.0" right="2.0" top="2.0"/>
+           </HBox.margin>
+           <font>
+               <Font size="10.0"/>
+           </font>
+        </Label>
+    </HBox>
 </VBox>

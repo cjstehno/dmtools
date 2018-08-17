@@ -14,7 +14,7 @@
                 <MenuItem text="Export..." />
                 <MenuItem text="Generate..." />
             </Menu>
-            <Menu text="Books">
+            <Menu fx:id="booksMenu" text="Books">
             </Menu>
         </MenuBar>
     </top>

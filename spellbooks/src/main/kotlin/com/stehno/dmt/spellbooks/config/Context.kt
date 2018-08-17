@@ -17,9 +17,9 @@ class Context {
         val viewResolver = register(ViewResolver(this))
         val storeService = StoreService(store, eventBus)
 
-        register(MainController(viewResolver))
+        register(MainController(viewResolver, storeService, eventBus))
         register(SpellListController(storeService, eventBus))
-        register(ImportProgressDialogController(storeService))
+        register(ImportProgressDialogController(storeService, eventBus))
         register(SpellDisplayContainerController(eventBus, viewResolver, storeService))
         register(SpellDetailsTabController())
     }
