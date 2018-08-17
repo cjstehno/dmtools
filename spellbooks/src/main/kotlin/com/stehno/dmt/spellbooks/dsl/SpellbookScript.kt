@@ -10,8 +10,12 @@ abstract class SpellbookScript : Script() {
         spellbook().title = value
     }
 
+    fun guild(value: Boolean = true){
+        spellbook().guild = value
+    }
+
     fun spell(@DelegatesTo(Spell::class) details: Closure<Void>) {
-        spellbook().spells.add(Spell.spell(spellbook().title!!, details))
+        spellbook().spells.add(Spell.spell(spellbook().title!!, spellbook().guild, details))
     }
 
     private fun spellbook() = binding.getProperty("spellbook") as Spellbook

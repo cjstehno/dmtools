@@ -24,15 +24,17 @@ data class Spell(
     var range: String? = null,
     var components: String? = null,
     var duration: String? = null,
-    var description: String? = null
+    var description: String? = null,
+    var guild: Boolean = false
 ) : Serializable {
 
     // TODO: some sort of validation would be helpful
+    // TODO: not sure I really need a spellbook object any longer
 
     companion object {
         @JvmStatic
-        fun spell(bookTitle: String, @DelegatesTo(Spell::class) closure: Closure<Void>): Spell {
-            val spell = Spell(book = bookTitle)
+        fun spell(bookTitle: String, guild: Boolean, @DelegatesTo(Spell::class) closure: Closure<Void>): Spell {
+            val spell = Spell(book = bookTitle, guild = guild)
             closure.delegate = spell
             closure.call()
 

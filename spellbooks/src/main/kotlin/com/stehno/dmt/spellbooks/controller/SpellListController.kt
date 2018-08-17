@@ -11,6 +11,7 @@ import com.stehno.dmt.spellbooks.event.Event
 import com.stehno.dmt.spellbooks.event.EventBus
 import com.stehno.dmt.spellbooks.ui.BooleanCellFactory
 import javafx.collections.FXCollections.observableArrayList
+import javafx.event.ActionEvent
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.input.MouseEvent
@@ -18,7 +19,6 @@ import javafx.scene.input.MouseEvent
 class SpellListController(private val storeService: StoreService, private val eventBus: EventBus) {
 
     // TODO: support sorting (resizing cols?)
-    // TODO: add ability to add more columns (or select visible - save as pref)
 
     lateinit var levelFilter: ChoiceBox<SpellLevel>
     lateinit var schoolFilter: ChoiceBox<School>
@@ -26,6 +26,7 @@ class SpellListController(private val storeService: StoreService, private val ev
     lateinit var searchFilter: TextField
     lateinit var footerLabel: Label
     lateinit var spellTable: TableView<Spell>
+    lateinit var guildToggle: ToggleButton
 
     private var searchString = ""
     private val books = mutableMapOf<String, Boolean>()
@@ -39,6 +40,11 @@ class SpellListController(private val storeService: StoreService, private val ev
 
         casterFilter.items = observableArrayList(listOf(null, *Caster.values()))
         casterFilter.selectionModel.select(0)
+
+        // setup the initial columns
+        spellTable.columns.addAll(
+            columnFor("Level"), columnFor("Name"), columnFor("School"), columnFor("Ritual")
+        )
 
         searchFilter.textProperty().addListener { observable, oldValue, newValue ->
             searchString = newValue
@@ -64,7 +70,6 @@ class SpellListController(private val storeService: StoreService, private val ev
             val columnName = evt.payload["column"] as String
             val enabled = evt.payload["enabled"] as Boolean
 
-            // FIXME: should populate initial cols using factory function
             if (enabled) {
                 spellTable.columns.add(columnFor(columnName))
             } else {
@@ -75,6 +80,10 @@ class SpellListController(private val storeService: StoreService, private val ev
 
     private fun columnFor(columnName: String): TableColumn<Spell, *> {
         return when (columnName) {
+            "Name" -> TableColumn<Spell, String>().apply {
+                text = "Name"
+                cellValueFactory = PropertyValueFactory<Spell, String>("name")
+            }
             "Book" -> TableColumn<Spell, String>().apply {
                 text = "Book"
                 cellValueFactory = PropertyValueFactory<Spell, String>("book")
@@ -108,7 +117,7 @@ class SpellListController(private val storeService: StoreService, private val ev
                 text = "Components"
                 cellValueFactory = PropertyValueFactory<Spell, String>("components")
             }
-            else -> throw IllegalArgumentException("Unexpected column!")
+            else -> throw IllegalArgumentException("Unexpected column ($columnName)")
         }
     }
 
@@ -120,7 +129,8 @@ class SpellListController(private val storeService: StoreService, private val ev
             schoolFilter.selectionModel.selectedItem,
             casterFilter.selectionModel.selectedItem,
             searchString,
-            enabledBooks
+            enabledBooks,
+            guildToggle.isSelected
         ))
 
         footerLabel.text = "Showing ${spellTable.items.size} of ${storeService.count()} spells"
