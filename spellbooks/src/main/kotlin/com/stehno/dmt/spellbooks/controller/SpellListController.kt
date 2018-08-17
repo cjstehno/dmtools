@@ -9,13 +9,11 @@ import com.stehno.dmt.spellbooks.dsl.Spell
 import com.stehno.dmt.spellbooks.dsl.SpellLevel
 import com.stehno.dmt.spellbooks.event.Event
 import com.stehno.dmt.spellbooks.event.EventBus
+import com.stehno.dmt.spellbooks.ui.BooleanCellFactory
 import javafx.collections.FXCollections.observableArrayList
-import javafx.scene.control.ChoiceBox
-import javafx.scene.control.Label
-import javafx.scene.control.TableView
-import javafx.scene.control.TextField
+import javafx.scene.control.*
+import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.input.MouseEvent
-import javafx.util.StringConverter
 
 class SpellListController(private val storeService: StoreService, private val eventBus: EventBus) {
 
@@ -51,20 +49,71 @@ class SpellListController(private val storeService: StoreService, private val ev
             books[book] = true
         }
 
+        updateItems()
+
         eventBus.subscribe(Events.BOOK_TOGGLED) { evt ->
             books[evt.payload["book"].toString()] = evt.payload["enabled"] as Boolean
             updateItems()
         }
 
-        updateItems()
-
         eventBus.subscribe(Events.SPELLS_CHANGED) { evt ->
             updateItems()
+        }
+
+        eventBus.subscribe(Events.COLUMNS_CHANGED) { evt ->
+            val columnName = evt.payload["column"] as String
+            val enabled = evt.payload["enabled"] as Boolean
+
+            // FIXME: should populate initial cols using factory function
+            if (enabled) {
+                spellTable.columns.add(columnFor(columnName))
+            } else {
+                spellTable.columns.remove(spellTable.columns.find { col -> col.text == columnName })
+            }
+        }
+    }
+
+    private fun columnFor(columnName: String): TableColumn<Spell, *> {
+        return when (columnName) {
+            "Book" -> TableColumn<Spell, String>().apply {
+                text = "Book"
+                cellValueFactory = PropertyValueFactory<Spell, String>("book")
+            }
+            "Ritual" -> TableColumn<Spell, String>().apply {
+                text = "Ritual"
+                cellValueFactory = PropertyValueFactory<Spell, String>("ritual")
+                cellFactory = BooleanCellFactory<Spell, String>()
+            }
+            "Level" -> TableColumn<Spell, String>().apply {
+                text = "Level"
+                cellValueFactory = PropertyValueFactory<Spell, String>("level")
+            }
+            "School" -> TableColumn<Spell, String>().apply {
+                text = "School"
+                cellValueFactory = PropertyValueFactory<Spell, String>("school")
+            }
+            "Casting Time" -> TableColumn<Spell, String>().apply {
+                text = "Casting Time"
+                cellValueFactory = PropertyValueFactory<Spell, String>("castingTime")
+            }
+            "Range" -> TableColumn<Spell, String>().apply {
+                text = "Range"
+                cellValueFactory = PropertyValueFactory<Spell, String>("range")
+            }
+            "Duration" -> TableColumn<Spell, String>().apply {
+                text = "Duration"
+                cellValueFactory = PropertyValueFactory<Spell, String>("duration")
+            }
+            "Components" -> TableColumn<Spell, String>().apply {
+                text = "Components"
+                cellValueFactory = PropertyValueFactory<Spell, String>("components")
+            }
+            else -> throw IllegalArgumentException("Unexpected column!")
         }
     }
 
     fun updateItems() {
-        val enabledBooks = books.filter { ent-> ent.value }.map { ent-> ent.key }
+        val enabledBooks = books.filter { ent -> ent.value }.map { ent -> ent.key }
 
         spellTable.items = storeService.listSpells(SpellFilter(
             levelFilter.selectionModel.selectedItem,
@@ -83,46 +132,4 @@ class SpellListController(private val storeService: StoreService, private val ev
             eventBus.publish(Event(Events.SHOW_SPELL_DETAILS, mapOf(Pair("key", selectedSpell.key))))
         }
     }
-}
-
-class SpellLevelStringConverter : StringConverter<SpellLevel>() {
-    override fun fromString(lvl: String?): SpellLevel? {
-        return if (lvl == "All Levels") {
-            null
-        } else {
-            SpellLevel.from(lvl!!)
-        }
-    }
-
-    override fun toString(lvl: SpellLevel?) = if (lvl != null) {
-        when (lvl.level) {
-            0 -> lvl.label
-            else -> "${lvl.label} Level"
-        }
-    } else {
-        "All Levels"
-    }
-}
-
-class SchoolStringConverter : StringConverter<School>() {
-    override fun fromString(school: String?): School? {
-        return if (school == "All Schools") {
-            null
-        } else {
-            School.from(school!!)
-        }
-    }
-
-    override fun toString(school: School?) = school?.toString() ?: "All Schools"
-}
-
-class CasterStringConverter : StringConverter<Caster>() {
-
-    override fun fromString(caster: String?): Caster? = if (caster == "All Casters") {
-        null
-    } else {
-        Caster.from(caster!!)
-    }
-
-    override fun toString(caster: Caster?) = caster?.toString() ?: "All Casters"
 }

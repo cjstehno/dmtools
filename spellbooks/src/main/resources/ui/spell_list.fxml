@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -36,7 +37,7 @@
                 <SchoolStringConverter />
             </converter>
         </ChoiceBox>
-        <ChoiceBox fx:id="casterFilter" onAction="#updateItems" HBox.hgrow="ALWAYS">
+        <ChoiceBox fx:id="casterFilter" onAction="#updateItems">
             <HBox.margin>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
             </HBox.margin>
@@ -44,11 +45,16 @@
                 <CasterStringConverter />
             </converter>
         </ChoiceBox>
+      <ToggleButton mnemonicParsing="false" text="DM's Guild" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+         <HBox.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </HBox.margin>
+      </ToggleButton>
     </HBox>
     <HBox>
         <TextField fx:id="searchFilter" promptText="Search..." HBox.hgrow="ALWAYS">
            <HBox.margin>
-               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
            </HBox.margin>
         </TextField>
     </HBox>
@@ -78,7 +84,7 @@
                     <PropertyValueFactory property="school" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn prefWidth="100.0" resizable="false" sortable="false" text="Ritual?">
+            <TableColumn prefWidth="100.0" resizable="false" sortable="false" text="Ritual">
                 <cellValueFactory>
                     <PropertyValueFactory property="ritual" />
                 </cellValueFactory>
@@ -91,10 +97,10 @@
     <HBox>
         <Label fx:id="footerLabel" text="Showing X of Y spells" textAlignment="CENTER" HBox.hgrow="ALWAYS">
            <HBox.margin>
-               <Insets left="2.0" right="2.0" top="2.0"/>
+               <Insets left="2.0" right="2.0" top="2.0" />
            </HBox.margin>
            <font>
-               <Font size="10.0"/>
+               <Font size="10.0" />
            </font>
         </Label>
     </HBox>

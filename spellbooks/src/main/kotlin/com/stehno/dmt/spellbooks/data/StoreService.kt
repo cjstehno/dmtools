@@ -1,5 +1,6 @@
 package com.stehno.dmt.spellbooks.data
 
+import com.stehno.dmt.spellbooks.dsl.Caster
 import com.stehno.dmt.spellbooks.dsl.Spell
 import com.stehno.dmt.spellbooks.event.Event
 import com.stehno.dmt.spellbooks.event.EventBus
@@ -28,10 +29,24 @@ class StoreService(private val store: Store, private val eventBus: EventBus) {
     fun count(): Int = store.count()
 
     fun listBooks(): Set<String> = store.listBooks()
+
+    fun stats(): Map<Caster, Int> {
+        val map = mutableMapOf<Caster, Int>()
+
+        listSpells().forEach { sp->
+            sp.casters!!.forEach { c->
+                val cnt = map.computeIfAbsent(c){ 0 }
+                map[c] = cnt + 1
+            }
+        }
+
+        return map
+    }
 }
 
 enum class Events(val id: String) {
     SPELLS_CHANGED("spells-changed"),
     SHOW_SPELL_DETAILS("show-spell-details"),
-    BOOK_TOGGLED("book-toggled")
+    BOOK_TOGGLED("book-toggled"),
+    COLUMNS_CHANGED("columns-changed")
 }

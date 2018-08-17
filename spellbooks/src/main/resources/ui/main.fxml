@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.121"
             xmlns:fx="http://javafx.com/fxml/1"
             prefHeight="800" prefWidth="1024"
@@ -10,11 +10,24 @@
     <top>
         <MenuBar>
             <Menu text="File">
-                <MenuItem text="Import..." onAction="#onImport" />
-                <MenuItem text="Export..." />
-                <MenuItem text="Generate..." />
+                <MenuItem text="Import..." onAction="#onImport"/>
+                <MenuItem text="Export..."/>
+                <MenuItem text="Generate..."/>
+            </Menu>
+            <Menu text="Columns">
+                <CheckMenuItem text="Book" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="Level" selected="true" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="School" selected="true" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="Ritual" selected="true" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="Range" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="Casting Time" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="Duration" onAction="#onColumnSelection"/>
+                <CheckMenuItem text="Components" onAction="#onColumnSelection"/>
             </Menu>
             <Menu fx:id="booksMenu" text="Books">
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About" onAction="#onAbout"/>
             </Menu>
         </MenuBar>
     </top>
