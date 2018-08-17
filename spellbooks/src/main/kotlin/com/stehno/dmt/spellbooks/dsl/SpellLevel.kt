@@ -17,5 +17,13 @@ enum class SpellLevel(val level: Int, val label: String) {
                 else -> throw IllegalArgumentException("The specified level ($level) is invalid.")
             }
         }
+
+        fun from(label: String): SpellLevel {
+            val spellLevel = values().find { it.label == label }
+            when {
+                spellLevel != null -> return spellLevel
+                else -> throw IllegalArgumentException("The specified level ($label) is invalid.")
+            }
+        }
     }
 }

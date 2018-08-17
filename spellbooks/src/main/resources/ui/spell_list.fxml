@@ -1,72 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.stehno.dmt.spellbooks.controller.CasterStringConverter?>
+<?import com.stehno.dmt.spellbooks.controller.SchoolStringConverter?>
+<?import com.stehno.dmt.spellbooks.controller.SpellLevelStringConverter?>
 <?import com.stehno.dmt.spellbooks.ui.BooleanCellFactory?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
 <VBox prefHeight="200.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.stehno.dmt.spellbooks.controller.SpellListController">
     <HBox.margin>
         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
     </HBox.margin>
     <HBox prefWidth="500.0">
-        <ChoiceBox value="All Levels">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="All Levels"/>
-                    <String fx:value="Cantrips"/>
-                    <String fx:value="First Level"/>
-                    <String fx:value="Second Level"/>
-                    <String fx:value="Third Level"/>
-                    <String fx:value="Fourth Level"/>
-                    <String fx:value="Fifth Level"/>
-                    <String fx:value="Sixth Level"/>
-                    <String fx:value="Seventh Level"/>
-                    <String fx:value="Eighth Level"/>
-                    <String fx:value="Ninth Level"/>
-                </FXCollections>
-            </items>
+        <ChoiceBox fx:id="levelFilter" onAction="#onLevelFilterSelected">
             <HBox.margin>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </HBox.margin>
+            <converter>
+                <SpellLevelStringConverter/>
+            </converter>
         </ChoiceBox>
-        <ChoiceBox value="Any School">
+        <ChoiceBox fx:id="schoolFilter" onAction="#onSchoolFilterSelected">
             <HBox.margin>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </HBox.margin>
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Any School"/>
-                    <String fx:value="Abjuration"/>
-                    <String fx:value="Conjuration"/>
-                    <String fx:value="Divination"/>
-                    <String fx:value="Enchantment"/>
-                    <String fx:value="Evocation"/>
-                    <String fx:value="Illusion"/>
-                    <String fx:value="Necromancy"/>
-                    <String fx:value="Transmutation"/>
-                </FXCollections>
-            </items>
+            <converter>
+                <SchoolStringConverter/>
+            </converter>
         </ChoiceBox>
-        <ChoiceBox value="Any Caster" HBox.hgrow="ALWAYS">
+        <ChoiceBox fx:id="casterFilter" HBox.hgrow="ALWAYS" onAction="#onCasterFilterSelected">
             <HBox.margin>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </HBox.margin>
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Any Caster"/>
-                    <String fx:value="Bard"/>
-                    <String fx:value="Cleric"/>
-                    <String fx:value="Druid"/>
-                    <String fx:value="Paladin"/>
-                    <String fx:value="Ranger"/>
-                    <String fx:value="Sorcerer"/>
-                    <String fx:value="Warlock"/>
-                    <String fx:value="Wizard"/>
-                </FXCollections>
-            </items>
+            <converter>
+                <CasterStringConverter/>
+            </converter>
         </ChoiceBox>
     </HBox>
     <TableView fx:id="spellTable" VBox.vgrow="ALWAYS" onMouseClicked="#onTableClicked">
