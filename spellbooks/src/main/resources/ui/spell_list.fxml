@@ -51,7 +51,7 @@
             </HBox.margin>
         </TextField>
     </HBox>
-    <TableView fx:id="spellTable" onMouseClicked="#onTableClicked" VBox.vgrow="ALWAYS">
+    <TableView fx:id="spellTable" onMouseClicked="#onTableClicked" VBox.vgrow="ALWAYS" onContextMenuRequested="#onContextMenu">
         <VBox.margin>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
         </VBox.margin>

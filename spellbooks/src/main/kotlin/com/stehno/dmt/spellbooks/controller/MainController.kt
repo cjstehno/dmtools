@@ -76,4 +76,8 @@ class MainController(private val viewResolver: ViewResolver, private val storeSe
         val menuItem = evt.source as CheckMenuItem
         eventBus.publish(Event(Events.COLUMNS_CHANGED, mapOf("column" to menuItem.text, "enabled" to menuItem.isSelected)))
     }
+
+    fun onExport(evt: ActionEvent) {
+        // TODO: export - asciidoc (raw, HTML, PDF), DSL, binary
+    }
 }

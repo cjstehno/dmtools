@@ -9,7 +9,7 @@
      fx:id="detailTab"
      fx:controller="com.stehno.dmt.spellbooks.controller.SpellDetailsTabController">
     <VBox prefWidth="100.0">
-        <WebView fx:id="spellDetails" VBox.vgrow="ALWAYS">
+        <WebView fx:id="spellDetails" VBox.vgrow="ALWAYS" onContextMenuRequested="#onContextMenu">
             <VBox.margin>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </VBox.margin>

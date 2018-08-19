@@ -11,9 +11,9 @@ import com.stehno.dmt.spellbooks.event.Event
 import com.stehno.dmt.spellbooks.event.EventBus
 import com.stehno.dmt.spellbooks.ui.BooleanCellFactory
 import javafx.collections.FXCollections.observableArrayList
-import javafx.event.ActionEvent
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
+import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.MouseEvent
 
 class SpellListController(private val storeService: StoreService, private val eventBus: EventBus) {
@@ -141,5 +141,21 @@ class SpellListController(private val storeService: StoreService, private val ev
             val selectedSpell = spellTable.selectionModel.selectedItem
             eventBus.publish(Event(Events.SHOW_SPELL_DETAILS, mapOf(Pair("key", selectedSpell.key))))
         }
+    }
+
+    fun onContextMenu(evt: ContextMenuEvent) {
+/*        // FIXME: merge shared code
+        val contextMenu = ContextMenu()
+
+        val favoriteItem = MenuItem("Favorite")
+        val newListItem = MenuItem("Add to New List...")
+
+        contextMenu.items.addAll(
+            favoriteItem,
+            newListItem
+        )
+
+        contextMenu.isAutoHide = true
+        contextMenu.show(spellTable, evt.screenX, evt.screenY)*/
     }
 }

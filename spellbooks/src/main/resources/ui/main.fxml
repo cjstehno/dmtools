@@ -7,8 +7,7 @@
         <MenuBar>
             <Menu text="File">
                 <MenuItem onAction="#onImport" text="Import..."/>
-                <MenuItem text="Export..."/>
-                <MenuItem text="Generate..."/>
+                <MenuItem onAction="#onExport" text="Export..."/>
             </Menu>
             <Menu text="Columns">
                 <CheckMenuItem onAction="#onColumnSelection" text="Book"/>
