@@ -16,7 +16,7 @@ class SpellListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_spell_list)
 
         // FIXME: temp data
-        val spells = listOf(
+        val allSpells = listOf(
             Spell("Transmute Test Failures into Success"),
             Spell("Fireball"),
             Spell("Dorcus' Wall of Displeasure"),
@@ -35,11 +35,25 @@ class SpellListActivity : AppCompatActivity() {
             Spell("Create Water")
         ).sortedBy { it.name }
 
+        val spells: MutableList<Spell> = allSpells.toMutableList()
+
         searchView.setOnEditorActionListener { textView, i, keyEvent ->
             if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
-                Log.d("SPELL-LIST", "Typed ENTER")
-            } else {
-                Log.d("SPELL-LIST", "Typed: ${keyEvent.characters}")
+                val searched = textView.text.toString()
+
+                Log.d("SPELL-LIST", "Searching for: $searched")
+
+                if (searched.isNotBlank()) {
+                    spells.removeAll { spell ->
+                        !spell.name.contains(searched, true)
+                    }
+
+                } else {
+                    spells.clear()
+                    spells.addAll(allSpells)
+                }
+
+                adapter.notifyDataSetChanged()
             }
             false
         }
