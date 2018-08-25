@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.KeyEvent
 import kotlinx.android.synthetic.main.activity_spell_list.*
 
 class SpellListActivity : AppCompatActivity() {
@@ -32,7 +33,16 @@ class SpellListActivity : AppCompatActivity() {
             Spell("Bear's Strength"),
             Spell("Protection from Good and Evil"),
             Spell("Create Water")
-        )
+        ).sortedBy { it.name }
+
+        searchView.setOnEditorActionListener { textView, i, keyEvent ->
+            if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+                Log.d("SPELL-LIST", "Typed ENTER")
+            } else {
+                Log.d("SPELL-LIST", "Typed: ${keyEvent.characters}")
+            }
+            false
+        }
 
         adapter = SpellRecycleAdapter(this, spells) { spell ->
             Log.d("SPELL-LIST", "Clicked on $spell")
