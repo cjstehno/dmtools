@@ -25,7 +25,7 @@ class BinaryExporter : Exporter {
     }
 
     private fun writeSpell(spell: Spell, out: DataOutputStream) {
-        make these as efficient as possible for size
+//        make these as efficient as possible for size
         out.writeUTF(spell.key)
         out.writeUTF(spell.book)
         out.writeBoolean(spell.guild)
