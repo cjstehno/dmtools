@@ -1,5 +1,6 @@
 package com.stehno.spellbooks
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -17,22 +18,22 @@ class SpellListActivity : AppCompatActivity() {
 
         // FIXME: temp data
         val allSpells = listOf(
-            Spell("Transmute Test Failures into Success"),
-            Spell("Fireball"),
-            Spell("Dorcus' Wall of Displeasure"),
-            Spell("Ambient Noise"),
-            Spell("Mordeks Endless Hall"),
-            Spell("Lightning Bolt"),
-            Spell("Burning Hands"),
-            Spell("Horrible Tickling Death"),
-            Spell("Arvin's Annoying Voice"),
-            Spell("Tasha's Hideous Uncontrollable Laughter"),
-            Spell("Aid"),
-            Spell("Cure Wounds"),
-            Spell("Cat's Grace"),
-            Spell("Bear's Strength"),
-            Spell("Protection from Good and Evil"),
-            Spell("Create Water")
+            Spell("Transmute Test Failures into Success", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This <b>is</b> a spell description"),
+            Spell("Fireball", 7, "Abjuration", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Dorcus' Wall of Displeasure", 0, "Necromancy", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Ambient Noise", 5, "Transmutation", false, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Mordeks Endless Hall", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Lightning Bolt", 3, "Transmutation", false, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Burning Hands", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Horrible Tickling Death", 1, "Conjuration", false, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Arvin's Annoying Voice", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Tasha's Hideous Uncontrollable Laughter", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Aid", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Cure Wounds", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Cat's Grace", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Bear's Strength", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Protection from Good and Evil", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
+            Spell("Create Water", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description")
         ).sortedBy { it.name }
 
         val spells: MutableList<Spell> = allSpells.toMutableList()
@@ -59,7 +60,9 @@ class SpellListActivity : AppCompatActivity() {
         }
 
         adapter = SpellRecycleAdapter(this, spells) { spell ->
-            Log.d("SPELL-LIST", "Clicked on $spell")
+            val intent = Intent(this, SpellViewActivity::class.java)
+            intent.putExtra(SpellViewActivity.EXTRA_SPELL, spell)
+            startActivity(intent)
         }
         spellList.adapter = adapter
 

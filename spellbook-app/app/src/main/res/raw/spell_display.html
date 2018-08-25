@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Andada" rel="stylesheet">
+    <style>
+      body {
+        background-color: #fffdd5;
+      }
+
+      .name {
+        color: darkred;
+        font-family: 'Andada', serif;
+        font-variant: small-caps;
+        font-weight: bold;
+      }
+
+      .tags {
+        font-style: italic;
+        margin-top: -20px;
+        margin-bottom: 10px;
+      }
+
+      .property-name {
+        font-weight: bold;
+      }
+
+      .property-value {
+      }
+
+      .description {
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1 class="name">{{spell_name}}</h1>
+    <div class="tags">
+      {{spell_level}} {{spell_school}} {{spell_ritual}}
+    </div>
+
+    <div><span class="property-name">Casting Time:</span> <span class="property-value">{{spell_casting_time}}</span></div>
+    <div><span class="property-name">Range:</span> <span class="property-value">{{spell_range}}</span></div>
+    <div><span class="property-name">Components:</span> <span class="property-value">{{spell_components}}</span></div>
+    <div><span class="property-name">Duration:</span> <span class="property-value">{{spell_duration}}</span></div>
+    <div><span class="property-name">Casters:</span> <span class="property-value">{{spell_casters}}</span></div>
+    <div><span class="property-name">Book:</span> <span class="property-value">{{spell_book}}</span></div>
+
+    <p class="description">{{spell_description}}</p>
+
+  </body>
+</html>
