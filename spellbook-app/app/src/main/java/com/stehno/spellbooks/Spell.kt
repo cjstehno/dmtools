@@ -1,19 +1,26 @@
 package com.stehno.spellbooks
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.TypeConverters
 import android.os.Parcel
 import android.os.Parcelable
+import java.util.*
 
-data class Spell(val name: String,
-                 val level: Int,
-                 val school: String,
-                 val ritual: Boolean,
-                 val castingTime: String,
-                 val range: String,
-                 val components: String,
-                 val duration: String,
-                 val casters: Array<String>,
-                 val book: String,
-                 val description: String) : Parcelable {
+@Entity(tableName = "spells", primaryKeys = ["book", "name"])
+@TypeConverters(value = [CasterTypeConverters::class])
+data class Spell(@ColumnInfo(name = "name") var name: String,
+                 @ColumnInfo(name = "level") var level: Int,
+                 @ColumnInfo(name = "school") var school: String,
+                 @ColumnInfo(name = "ritual") var ritual: Boolean,
+                 @ColumnInfo(name = "casting_time") var castingTime: String,
+                 @ColumnInfo(name = "range") var range: String,
+                 @ColumnInfo(name = "components") var components: String,
+                 @ColumnInfo(name = "duration") var duration: String,
+                 @ColumnInfo(name = "casters", typeAffinity = ColumnInfo.TEXT) var casters: Array<String>,
+                 @ColumnInfo(name = "book") var book: String,
+                 @ColumnInfo(name = "description") var description: String
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -50,6 +57,42 @@ data class Spell(val name: String,
 
     override fun describeContents(): Int {
         return 0 // TODO: what is this for?
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Spell
+
+        if (name != other.name) return false
+        if (level != other.level) return false
+        if (school != other.school) return false
+        if (ritual != other.ritual) return false
+        if (castingTime != other.castingTime) return false
+        if (range != other.range) return false
+        if (components != other.components) return false
+        if (duration != other.duration) return false
+        if (!Arrays.equals(casters, other.casters)) return false
+        if (book != other.book) return false
+        if (description != other.description) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + level
+        result = 31 * result + school.hashCode()
+        result = 31 * result + ritual.hashCode()
+        result = 31 * result + castingTime.hashCode()
+        result = 31 * result + range.hashCode()
+        result = 31 * result + components.hashCode()
+        result = 31 * result + duration.hashCode()
+        result = 31 * result + Arrays.hashCode(casters)
+        result = 31 * result + book.hashCode()
+        result = 31 * result + description.hashCode()
+        return result
     }
 
     companion object CREATOR : Parcelable.Creator<Spell> {

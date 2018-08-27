@@ -16,27 +16,10 @@ class SpellListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spell_list)
 
-        // FIXME: temp data
-        val allSpells = listOf(
-            Spell("Transmute Test Failures into Success", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This <b>is</b> a spell description"),
-            Spell("Fireball", 7, "Abjuration", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Dorcus' Wall of Displeasure", 0, "Necromancy", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Ambient Noise", 5, "Transmutation", false, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Mordeks Endless Hall", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Lightning Bolt", 3, "Transmutation", false, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Burning Hands", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Horrible Tickling Death", 1, "Conjuration", false, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Arvin's Annoying Voice", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Tasha's Hideous Uncontrollable Laughter", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Aid", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Cure Wounds", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Cat's Grace", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Bear's Strength", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Protection from Good and Evil", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description"),
-            Spell("Create Water", 0, "Transmutation", true, "1 round", "30 feet", "V, S", "Instantaneous", arrayOf("Wizard", "Warlock"), "Tome of Wonders", "This is a spell description")
-        ).sortedBy { it.name }
+        val database = SpellDatabase.getInstance(applicationContext)
+        val dao = database.spellsDao()
 
-        val spells: MutableList<Spell> = allSpells.toMutableList()
+        val spells: MutableList<Spell> = dao.listAll().toMutableList()
 
         searchView.setOnEditorActionListener { textView, i, keyEvent ->
             if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -51,7 +34,7 @@ class SpellListActivity : AppCompatActivity() {
 
                 } else {
                     spells.clear()
-                    spells.addAll(allSpells)
+                    spells.addAll(dao.listAll())
                 }
 
                 adapter.notifyDataSetChanged()
