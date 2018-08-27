@@ -10,6 +10,10 @@ import kotlinx.android.synthetic.main.activity_spell_list.*
 
 class SpellListActivity : AppCompatActivity() {
 
+    // FIXME: wire in the footer label
+    // FIXME: add support for sharing file to import spell content
+//    https://developer.android.com/training/sharing/receive
+
     private lateinit var adapter: SpellRecycleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
