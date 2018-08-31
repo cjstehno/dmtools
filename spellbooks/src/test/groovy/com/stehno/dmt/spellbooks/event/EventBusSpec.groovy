@@ -12,17 +12,18 @@ class EventBusSpec extends Specification {
     def 'pub-sub (sync)'() {
         setup:
         boolean fired = false
-        String payload = null
-        eventBus.subscribe('testing') { evt ->
+        def payload = null
+        eventBus.subscribe('one') { evt ->
             fired = true
+            payload = evt.payload
         }
 
         when:
-        eventBus.publish(new Event('one'))
+        eventBus.publish(new Event('one', [x:42]))
 
         then:
         fired
-        payload == 'one'
+        payload == [x:42]
     }
 
     def 'pub-sub (async)'() {
@@ -30,13 +31,13 @@ class EventBusSpec extends Specification {
         CountDownLatch latch = new CountDownLatch(1)
 
         boolean fired = false
-        eventBus.subscribe(TestEvent) { evt ->
+        eventBus.subscribe('two') { evt ->
             fired = true
             latch.countDown()
         }
 
         when:
-        eventBus.publishAsync(new Event('two'))
+        eventBus.publishAsync(new Event('two', [:]))
 
         then:
         latch.await()

@@ -25,8 +25,8 @@ class Store(private val dbFile: File? = null) {
         spellRepo.insert(spell)
     }
 
-    fun listSpells(spellFilter: SpellFilter = SpellFilter()): List<Spell> {
-        return spellRepo.find(spellFilter.toObjectFilter()).toList()
+    fun listSpells(spellFilter: SpellFilter? = SpellFilter()): List<Spell> {
+        return spellRepo.find(spellFilter?.toObjectFilter()).toList()
     }
 
     fun shutdown() {

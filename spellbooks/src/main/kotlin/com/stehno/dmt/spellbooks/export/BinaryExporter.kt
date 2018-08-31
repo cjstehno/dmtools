@@ -4,6 +4,7 @@ import com.stehno.dmt.spellbooks.dsl.Caster
 import com.stehno.dmt.spellbooks.dsl.School
 import com.stehno.dmt.spellbooks.dsl.Spell
 import com.stehno.dmt.spellbooks.dsl.SpellLevel
+import org.asciidoctor.Asciidoctor
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
@@ -11,6 +12,8 @@ import java.io.File
 class BinaryExporter : Exporter {
 
     // TODO: needs compression
+
+    private val asciidoctor = Asciidoctor.Factory.create()
 
     override fun export(spells: Collection<Spell>, file: File) {
         DataOutputStream(file.outputStream()).use { out ->
@@ -25,7 +28,6 @@ class BinaryExporter : Exporter {
     }
 
     private fun writeSpell(spell: Spell, out: DataOutputStream) {
-//        make these as efficient as possible for size
         out.writeUTF(spell.key)
         out.writeUTF(spell.book)
         out.writeBoolean(spell.guild)
@@ -38,7 +40,7 @@ class BinaryExporter : Exporter {
         out.writeUTF(spell.range)
         out.writeUTF(spell.components)
         out.writeUTF(spell.casters!!.joinToString(","))
-        out.writeUTF(spell.description)
+        out.writeUTF(asciidoctor.convert(spell.description, mapOf())) // TODO: note this rendering in docs
     }
 }
 

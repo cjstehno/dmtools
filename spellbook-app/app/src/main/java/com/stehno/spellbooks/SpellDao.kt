@@ -16,4 +16,7 @@ interface SpellDao {
 
     @Query("DELETE from spells")
     fun deleteAll()
+
+    @Query("SELECT COUNT(*) from spells")
+    fun count(): Int
 }

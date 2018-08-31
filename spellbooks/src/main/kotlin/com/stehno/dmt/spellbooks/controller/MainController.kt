@@ -6,6 +6,7 @@ import com.stehno.dmt.spellbooks.data.StoreService
 import com.stehno.dmt.spellbooks.dsl.Caster
 import com.stehno.dmt.spellbooks.event.Event
 import com.stehno.dmt.spellbooks.event.EventBus
+import com.stehno.dmt.spellbooks.export.BinaryExporter
 import javafx.event.ActionEvent
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
@@ -79,5 +80,18 @@ class MainController(private val viewResolver: ViewResolver, private val storeSe
 
     fun onExport(evt: ActionEvent) {
         // TODO: export - asciidoc (raw, HTML, PDF), DSL, binary
+
+        val selectedFile = FileChooser().apply {
+            title = "Export Spells"
+        }.showSaveDialog(null)
+
+        println("Exporting into $selectedFile...")
+
+        val exporter = BinaryExporter()
+        exporter.export(storeService.listSpells(), selectedFile)
+
+        // FIXME: add progress dialog
+        println("Done exporting.")
+
     }
 }

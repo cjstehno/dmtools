@@ -20,7 +20,7 @@ class StoreSpec extends Specification {
 
     def 'add spells'() {
         setup:
-        Spell spell = Spell.spell('Testing Magic'){
+        Spell spell = Spell.spell('Testing Magic', true){
             name 'Summon Unit Test'
             level SpellLevel.FIRST
             ritual()

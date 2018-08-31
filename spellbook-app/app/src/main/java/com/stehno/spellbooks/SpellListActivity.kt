@@ -1,18 +1,14 @@
 package com.stehno.spellbooks
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.KeyEvent
 import kotlinx.android.synthetic.main.activity_spell_list.*
 
 class SpellListActivity : AppCompatActivity() {
-
-    // FIXME: wire in the footer label
-    // FIXME: add support for sharing file to import spell content
-//    https://developer.android.com/training/sharing/receive
 
     private lateinit var adapter: SpellRecycleAdapter
 
@@ -23,13 +19,19 @@ class SpellListActivity : AppCompatActivity() {
         val database = SpellDatabase.getInstance(applicationContext)
         val dao = database.spellsDao()
 
+        if (intent?.action == Intent.ACTION_SEND) {
+            // import the shared spell codex
+            val uri = intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+            if (uri != null) {
+                CodexImporter.importSpells(contentResolver.openInputStream(uri), dao)
+            }
+        }
+
         val spells: MutableList<Spell> = dao.listAll().toMutableList()
 
         searchView.setOnEditorActionListener { textView, i, keyEvent ->
-            if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (keyEvent == null || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                 val searched = textView.text.toString()
-
-                Log.d("SPELL-LIST", "Searching for: $searched")
 
                 if (searched.isNotBlank()) {
                     spells.removeAll { spell ->
@@ -42,6 +44,7 @@ class SpellListActivity : AppCompatActivity() {
                 }
 
                 adapter.notifyDataSetChanged()
+                updateFooterLabel(spells.size, dao.count())
             }
             false
         }
@@ -56,5 +59,11 @@ class SpellListActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         spellList.layoutManager = layoutManager
         spellList.setHasFixedSize(true)
+
+        updateFooterLabel(spells.size, dao.count())
+    }
+
+    private fun updateFooterLabel(visible: Int, total: Int) {
+        listFooter.text = "Showing $visible of $total spells"
     }
 }
