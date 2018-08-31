@@ -8,7 +8,7 @@ import android.arch.persistence.room.Query
 @Dao
 interface SpellDao {
 
-    @Query("SELECT * from spells")
+    @Query("SELECT * from spells order by name")
     fun listAll(): List<Spell>
 
     @Insert(onConflict = REPLACE)
