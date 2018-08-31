@@ -1,7 +1,6 @@
 # Spellbooks
 
-> A spellbook management application that allows importing from formatted spell files.
-
+> A spellbook management application that allows importing from formatted spell files. Spells not included.
 
 ![alt text](spellbooks-shot.png "Screenshot")
 
