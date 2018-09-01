@@ -31,22 +31,14 @@ class SpellListActivity : AppCompatActivity() {
 
         searchView.setOnEditorActionListener { textView, i, keyEvent ->
             if (keyEvent == null || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
-                val searched = textView.text.toString()
-
-                if (searched.isNotBlank()) {
-                    spells.removeAll { spell ->
-                        !spell.name.contains(searched, true)
-                    }
-
-                } else {
-                    spells.clear()
-                    spells.addAll(dao.listAll())
-                }
-
-                adapter.notifyDataSetChanged()
-                updateFooterLabel(spells.size, dao.count())
+                filterSpellList(spells, dao, textView.text.toString())
             }
             false
+        }
+
+        clearButton.setOnClickListener {
+            searchView.text.clear()
+            filterSpellList(spells, dao, "")
         }
 
         adapter = SpellRecycleAdapter(this, spells) { spell ->
@@ -60,6 +52,21 @@ class SpellListActivity : AppCompatActivity() {
         spellList.layoutManager = layoutManager
         spellList.setHasFixedSize(true)
 
+        updateFooterLabel(spells.size, dao.count())
+    }
+
+    private fun filterSpellList(spells: MutableList<Spell>, dao: SpellDao, searched: String) {
+        if (searched.isNotBlank()) {
+            spells.removeAll { spell ->
+                !(spell.name.contains(searched, true) || spell.description.contains(searched, true))
+            }
+
+        } else {
+            spells.clear()
+            spells.addAll(dao.listAll())
+        }
+
+        adapter.notifyDataSetChanged()
         updateFooterLabel(spells.size, dao.count())
     }
 
