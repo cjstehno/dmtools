@@ -5,7 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.KeyEvent
+import com.stehno.spellbooks.StringUtils.extract
 import kotlinx.android.synthetic.main.activity_spell_list.*
 
 class SpellListActivity : AppCompatActivity() {
@@ -56,13 +58,17 @@ class SpellListActivity : AppCompatActivity() {
     }
 
     private fun filterSpellList(spells: MutableList<Spell>, dao: SpellDao, searched: String) {
-        if (searched.isNotBlank()) {
-            spells.removeAll { spell ->
-                !(spell.name.contains(searched, true) || spell.description.contains(searched, true))
-            }
+        spells.clear()
 
+        if (searched.isNotBlank()) {
+            val (withoutLevel, level) = extract(searched, "level")
+            val (withoutCaster, caster) = extract(withoutLevel, "caster")
+            val (withoutSchool, school) = extract(withoutCaster, "school")
+
+            Log.w("SPELL-LIST", "Level: |$level|, Caster: |$caster|, School: |$school|, Text: |${withoutSchool.trim()}|")
+
+            spells.addAll(dao.filter(withoutSchool.trim(), level?.toInt(), caster, school))
         } else {
-            spells.clear()
             spells.addAll(dao.listAll())
         }
 
