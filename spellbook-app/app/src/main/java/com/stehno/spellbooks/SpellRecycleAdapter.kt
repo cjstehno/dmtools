@@ -12,7 +12,7 @@ class SpellRecycleAdapter(private val context: Context,
                           private val itemClick: (Spell) -> Unit) : RecyclerView.Adapter<SpellRecycleAdapter.Holder>() {
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder?.bind(spells[position], context)
+        holder?.bind(spells[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -27,7 +27,7 @@ class SpellRecycleAdapter(private val context: Context,
 
         private var spellText = itemView?.findViewById<TextView>(R.id.spellItemText)
 
-        fun bind(spell: Spell, context: Context) {
+        fun bind(spell: Spell) {
             spellText?.text = spell.name
 
             itemView.setOnClickListener { itemClick(spell) }

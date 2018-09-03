@@ -32,7 +32,7 @@ class SpellListActivity : AppCompatActivity() {
 
         val spells: MutableList<Spell> = dao.listAll().toMutableList()
 
-        searchView.setOnEditorActionListener { textView, i, keyEvent ->
+        searchView.setOnEditorActionListener { textView, _, keyEvent ->
             if (keyEvent == null || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                 filterSpellList(spells, dao, textView.text.toString())
             }

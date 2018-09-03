@@ -8,11 +8,11 @@ object CodexImporter {
     fun importSpells(input: InputStream, dao: SpellDao) {
         val spells = mutableListOf<Spell>()
 
-        DataInputStream(input).use { input ->
-            val count = input.readShort()
+        DataInputStream(input).use { instr ->
+            val count = instr.readShort()
 
             (0..(count - 1)).forEach {
-                spells.add(readSpell(input))
+                spells.add(readSpell(instr))
             }
         }
 
@@ -24,9 +24,9 @@ object CodexImporter {
     }
 
     private fun readSpell(input: DataInputStream): Spell {
-        val key = input.readUTF() // not used by need to read
+        input.readUTF() // not used by need to read
         val book = input.readUTF()
-        val guild = input.readBoolean() // not used by need to read
+        input.readBoolean() // not used by need to read
         val name = input.readUTF()
         val ritual = input.readBoolean()
         val level = input.readInt()
