@@ -1,0 +1,11 @@
+{{spell_name}}
+{{spell_level}} {{spell_school}} {{spell_ritual}}
+
+Casting Time: {{spell_casting_time}}
+Range: {{spell_range}}
+Components: {{spell_components}}
+Duration: {{spell_duration}}
+Casters: {{spell_casters}}
+Book: {{spell_book}}
+
+{{spell_description}}

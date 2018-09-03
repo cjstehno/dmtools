@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import com.stehno.spellbooks.StringUtils.renderTemplate
 import kotlinx.android.synthetic.main.activity_spell_view.*
-import android.text.Html
-
 
 
 class SpellViewActivity : AppCompatActivity() {
@@ -25,7 +23,8 @@ class SpellViewActivity : AppCompatActivity() {
 
         spell = intent.getParcelableExtra(EXTRA_SPELL)
 
-        spellView.loadData(renderSpellHtml(), "text/html", "UTF-8")
+        val template = resources.openRawResource(R.raw.spell_display).bufferedReader().use { it.readText() }
+        spellView.loadData(renderSpell(template), "text/html", "UTF-8")
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -39,7 +38,7 @@ class SpellViewActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-    private fun renderSpellHtml() = renderTemplate(resources.openRawResource(R.raw.spell_display).bufferedReader().use { it.readText() }, mapOf(
+    private fun renderSpell(template: String) = renderTemplate(template, mapOf(
         "spell_name" to spell.name,
         "spell_level" to when (spell.level) {
             0 -> "Cantrip"
@@ -62,8 +61,8 @@ class SpellViewActivity : AppCompatActivity() {
     private fun sendSpell() {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, Html.fromHtml(renderSpellHtml(), Html.FROM_HTML_MODE_COMPACT))
-            type = "text/html"
+            putExtra(Intent.EXTRA_TEXT, renderSpell(resources.openRawResource(R.raw.spell_text).bufferedReader().use { it.readText() }))
+            type = "text/plain"
         }
         startActivity(Intent.createChooser(sendIntent, "Send to..."))
     }
