@@ -24,4 +24,14 @@ object StringUtils {
             Pair(text, null)
         }
     }
+
+    fun renderTemplate(template: String, model: Map<String,String>): String {
+        var result = template
+
+        model.forEach { name, value->
+            result = result.replace("{{$name}}", value)
+        }
+
+        return result
+    }
 }

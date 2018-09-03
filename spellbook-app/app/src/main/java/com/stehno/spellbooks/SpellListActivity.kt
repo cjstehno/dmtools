@@ -17,6 +17,7 @@ class SpellListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spell_list)
+        setSupportActionBar(listToolbar)
 
         val database = SpellDatabase.getInstance(applicationContext)
         val dao = database.spellsDao()

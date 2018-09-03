@@ -1,8 +1,14 @@
 package com.stehno.spellbooks
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import com.stehno.spellbooks.StringUtils.renderTemplate
 import kotlinx.android.synthetic.main.activity_spell_view.*
+import android.text.Html
+
+
 
 class SpellViewActivity : AppCompatActivity() {
 
@@ -10,31 +16,55 @@ class SpellViewActivity : AppCompatActivity() {
         const val EXTRA_SPELL = "spell"
     }
 
+    private lateinit var spell: Spell
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spell_view)
+        setSupportActionBar(viewToolbar)
 
-        val spell = intent.getParcelableExtra<Spell>(EXTRA_SPELL)
+        spell = intent.getParcelableExtra(EXTRA_SPELL)
 
-        var template = this.resources.openRawResource(R.raw.spell_display).bufferedReader().use { it.readText() }
-        template = template.replace("{{spell_name}}", spell.name)
-        template = template.replace("{{spell_level}}", when (spell.level) {
+        spellView.loadData(renderSpellHtml(), "text/html", "UTF-8")
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.action_menu, menu)
+
+        menu.getItem(0).setOnMenuItemClickListener {
+            sendSpell()
+            false
+        }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun renderSpellHtml() = renderTemplate(resources.openRawResource(R.raw.spell_display).bufferedReader().use { it.readText() }, mapOf(
+        "spell_name" to spell.name,
+        "spell_level" to when (spell.level) {
             0 -> "Cantrip"
             else -> "${spell.level}-level"
-        })
-        template = template.replace("{{spell_school}}", spell.school)
-        template = template.replace("{{spell_ritual}}", when (spell.ritual) {
+        },
+        "spell_school" to spell.school,
+        "spell_ritual" to when (spell.ritual) {
             true -> " (ritual)"
             else -> ""
-        })
-        template = template.replace("{{spell_casting_time}}", spell.castingTime)
-        template = template.replace("{{spell_range}}", spell.range)
-        template = template.replace("{{spell_components}}", spell.components)
-        template = template.replace("{{spell_duration}}", spell.duration)
-        template = template.replace("{{spell_casters}}", spell.casters.joinToString(", "))
-        template = template.replace("{{spell_book}}", spell.book)
-        template = template.replace("{{spell_description}}", spell.description)
+        },
+        "spell_casting_time" to spell.castingTime,
+        "spell_range" to spell.range,
+        "spell_components" to spell.components,
+        "spell_duration" to spell.duration,
+        "spell_casters" to spell.casters.joinToString(", "),
+        "spell_book" to spell.book,
+        "spell_description" to spell.description
+    ))
 
-        spellView.loadData(template, "text/html", "UTF-8")
+    private fun sendSpell() {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, Html.fromHtml(renderSpellHtml(), Html.FROM_HTML_MODE_COMPACT))
+            type = "text/html"
+        }
+        startActivity(Intent.createChooser(sendIntent, "Send to..."))
     }
 }
