@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">DifficultyCalculator</string>
+    <string name="combatants_label">Combatants</string>
+    <string name="add_combatant">Add</string>
+    <string name="calculate">Calculate</string>
+</resources>
