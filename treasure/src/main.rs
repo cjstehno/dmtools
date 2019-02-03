@@ -8,8 +8,6 @@ use std::env;
 use std::process;
 use std::vec::Vec;
 
-use rand::Rng;
-
 // FIXME: better error handling
 
 #[derive(Debug)]
@@ -57,15 +55,28 @@ fn individual_treasure(cr: u8) -> Treasure {
     match table.iter().find(|row| is_in_range(d_100, row.roll.as_str())) {
         Some(row) => {
             println!("Row: {:?}", row);
-            Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
+            Treasure {
+                cp: roll_dice(&row.cp),
+                sp: roll_dice(&row.sp),
+                ep: roll_dice(&row.ep),
+                gp: roll_dice(&row.gp),
+                pp: roll_dice(&row.pp)
+            }
         }
         None => Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
     }
 }
 
 fn is_in_range(d_100: u16, range: &str) -> bool {
-    // TODO: split range on - and see if d_100 is between both numbers inclusive
+    let bounds: Vec<&str> = range.split("-").collect();
+    let low: u16 = bounds[0].parse::<u16>().unwrap();
+    let high: u16 = bounds[1].parse::<u16>().unwrap();
 
+    if d_100 >= low && d_100 <= high {
+        true
+    } else {
+        false
+    }
 }
 
 fn load_individual_table(path: &str) -> Vec<IndividualTreasure> {
@@ -90,4 +101,12 @@ fn load_individual_table(path: &str) -> Vec<IndividualTreasure> {
     }
 
     table_items
+}
+
+fn roll_dice(dice: &str) -> u32 {
+    if dice == "-" {
+        return 0
+    } else {
+        return 1 // FIXME: parse and gen the random roll
+    }
 }
