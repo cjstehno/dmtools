@@ -147,12 +147,10 @@ fn roll(dice: DieRoll) -> u16 {
     let mut rolls = 0;
 
     for r in 0..dice.count {
-        let rolled = rand::random::<u16>() % dice.d;
+        let rolled = (rand::random::<u16>() % dice.d) + 1;
         println!("Rolled ({}): {}", dice.d, rolled);
         rolls += rolled;
     }
 
     (rolls + dice.modifier) * dice.multiplier
 }
-
-the random % is returning 0
