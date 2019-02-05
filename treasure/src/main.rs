@@ -1,3 +1,4 @@
+extern crate clap;
 extern crate csv;
 extern crate rand;
 extern crate regex;
@@ -9,6 +10,7 @@ use std::env;
 use std::process;
 use std::vec::Vec;
 
+use clap::{App, Arg};
 use regex::Regex;
 
 // FIXME: better error handling
@@ -45,9 +47,22 @@ struct DieRoll {
     multiplier: u16,
 }
 
-// TODO: --individual|--hoard(-i|-h) --cr=# --count=#[1]
 fn main() {
-    let cr = 1_u8;
+    let matches = App::new("Treasure Calculator")
+        .version("0.0.1")
+        .author("Christopher J. Stehno <chris@stehno.com>")
+        .about("Calculates random treasure for D&D 5e.")
+        .arg(Arg::with_name("hoard").long("hoard").help("Generates hoard treasure."))
+        .arg(Arg::with_name("cr").long("cr").short("c").value_name("CHALLENGE-RATING").help("Specifies the Challenge Rating.").required(true).takes_value(true))
+        .arg(Arg::with_name("rolls").long("rolls").short("r").value_name("COUNT").help("Number of treasure rolls to generate.").takes_value(true))
+        .get_matches();
+
+    let cr: u8 = matches.value_of("cr").unwrap().parse().unwrap();
+    let rolls: u8 = matches.value_of("rolls").unwrap_or("1").parse().unwrap();
+    let hoard: bool = matches.occurrences_of("hoard") > 0;
+
+    println!("Rolling {} {} CR-{} treasure(s).", rolls, if hoard { "hoard" } else { "individual" }, cr);
+
     let treasure = individual_treasure(cr);
 
     println!("Treasure (CR-{}): {:?}", cr, treasure);
@@ -66,6 +81,7 @@ fn individual_treasure(cr: u8) -> Treasure {
     match table.iter().find(|row| is_in_range(d_100, row.roll.as_str())) {
         Some(row) => {
             println!("Row: {:?}", row);
+            // TODO: add Treasure::generate() method to do this
             Treasure {
                 cp: roll_dice(&row.cp),
                 sp: roll_dice(&row.sp),
@@ -114,6 +130,7 @@ fn load_individual_table(path: &str) -> Vec<IndividualTreasure> {
     table_items
 }
 
+// TODO: the DirRoll struct should provide this
 fn roll_dice(dice: &str) -> u16 {
     if dice == "-" {
         return 0;
@@ -136,17 +153,15 @@ fn roll_dice(dice: &str) -> u16 {
 
 // FIXME: refactor some of this into DieRoll impl
 fn str_to_num(value: &str, default_value: u16) -> u16 {
-    if value.is_empty() {
-        default_value
-    } else {
-        value.parse().unwrap()
-    }
+    value.parse().unwrap_or(default_value)
 }
 
+// TODO: the DieRoll struct should do this
 fn roll(dice: DieRoll) -> u16 {
     let mut rolls = 0;
 
-    for r in 0..dice.count {
+    // TODO: use fold iter here
+    for _r in 0..dice.count {
         let rolled = (rand::random::<u16>() % dice.d) + 1;
         println!("Rolled ({}): {}", dice.d, rolled);
         rolls += rolled;
