@@ -39,12 +39,63 @@ struct IndividualTreasure {
     pp: String,
 }
 
+impl IndividualTreasure {
+    fn generate(&self) -> Treasure {
+        Treasure {
+            cp: DieRoll::new(&self.cp).roll(),
+            sp: DieRoll::new(&self.sp).roll(),
+            ep: DieRoll::new(&self.ep).roll(),
+            gp: DieRoll::new(&self.gp).roll(),
+            pp: DieRoll::new(&self.pp).roll(),
+        }
+    }
+}
+
 #[derive(Debug)]
 struct DieRoll {
     count: u16,
     d: u16,
     modifier: u16,
     multiplier: u16,
+}
+
+impl DieRoll {
+    fn new(dice: &str) -> DieRoll {
+        if dice == "-" {
+            DieRoll { count: 0, d: 0, modifier: 0, multiplier: 0 }
+        } else {
+            let rx = Regex::new("([0-9]*)d([0-9]*)[+]?([0-9]*)[x]?([0-9]*)").unwrap();
+            println!("Matches: {}", rx.is_match(dice));
+
+            let groups = rx.captures(dice).unwrap();
+
+            DieRoll {
+                count: DieRoll::str_to_num(groups.get(1).unwrap().as_str(), 1),
+                d: DieRoll::str_to_num(groups.get(2).unwrap().as_str(), 0),
+                modifier: DieRoll::str_to_num(groups.get(3).unwrap().as_str(), 0),
+                multiplier: DieRoll::str_to_num(groups.get(4).unwrap().as_str(), 1),
+            }
+        }
+    }
+
+    fn str_to_num(value: &str, default_value: u16) -> u16 {
+        value.parse().unwrap_or(default_value)
+    }
+
+    fn roll(&self) -> u16 {
+        let mut rolls = 0;
+
+        let dice = &self;
+
+        // TODO: use fold iter here
+        for _r in 0..dice.count {
+            let rolled = (rand::random::<u16>() % dice.d) + 1;
+            println!("Rolled ({}): {}", dice.d, rolled);
+            rolls += rolled;
+        }
+
+        (rolls + dice.modifier) * dice.multiplier
+    }
 }
 
 fn main() {
@@ -81,14 +132,7 @@ fn individual_treasure(cr: u8) -> Treasure {
     match table.iter().find(|row| is_in_range(d_100, row.roll.as_str())) {
         Some(row) => {
             println!("Row: {:?}", row);
-            // TODO: add Treasure::generate() method to do this
-            Treasure {
-                cp: roll_dice(&row.cp),
-                sp: roll_dice(&row.sp),
-                ep: roll_dice(&row.ep),
-                gp: roll_dice(&row.gp),
-                pp: roll_dice(&row.pp),
-            }
+            row.generate()
         }
         None => Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
     }
@@ -106,6 +150,7 @@ fn is_in_range(d_100: u16, range: &str) -> bool {
     }
 }
 
+// TODO: maybe this should be part of IndividualTreasure
 fn load_individual_table(path: &str) -> Vec<IndividualTreasure> {
     let mut table_items = vec![];
 
@@ -128,44 +173,4 @@ fn load_individual_table(path: &str) -> Vec<IndividualTreasure> {
     }
 
     table_items
-}
-
-// TODO: the DirRoll struct should provide this
-fn roll_dice(dice: &str) -> u16 {
-    if dice == "-" {
-        return 0;
-    } else {
-        let rx = Regex::new("([0-9]*)d([0-9]*)[+]?([0-9]*)[x]?([0-9]*)").unwrap();
-        println!("Matches: {}", rx.is_match(dice));
-
-        let groups = rx.captures(dice).unwrap();
-        let die_roll = DieRoll {
-            count: str_to_num(groups.get(1).unwrap().as_str(), 1),
-            d: str_to_num(groups.get(2).unwrap().as_str(), 0),
-            modifier: str_to_num(groups.get(3).unwrap().as_str(), 0),
-            multiplier: str_to_num(groups.get(4).unwrap().as_str(), 1),
-        };
-        println!("Die: {:?}", die_roll);
-
-        return roll(die_roll);
-    }
-}
-
-// FIXME: refactor some of this into DieRoll impl
-fn str_to_num(value: &str, default_value: u16) -> u16 {
-    value.parse().unwrap_or(default_value)
-}
-
-// TODO: the DieRoll struct should do this
-fn roll(dice: DieRoll) -> u16 {
-    let mut rolls = 0;
-
-    // TODO: use fold iter here
-    for _r in 0..dice.count {
-        let rolled = (rand::random::<u16>() % dice.d) + 1;
-        println!("Rolled ({}): {}", dice.d, rolled);
-        rolls += rolled;
-    }
-
-    (rolls + dice.modifier) * dice.multiplier
 }
