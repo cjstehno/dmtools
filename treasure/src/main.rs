@@ -1,22 +1,21 @@
-mod treasure;
-mod individual_treasure;
-mod dice;
-
 extern crate clap;
 extern crate csv;
 extern crate rand;
-
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
 use std::vec::Vec;
 
-use crate::treasure::Treasure;
-use crate::individual_treasure::IndividualTreasure;
-use crate::dice::DieRoll;
-
 use clap::{App, Arg};
+
+use crate::dice::DieRoll;
+use crate::individual_treasure::IndividualTreasure;
+use crate::treasure::Treasure;
+
+mod treasure;
+mod individual_treasure;
+mod dice;
 
 // FIXME: better error handling
 
@@ -57,10 +56,15 @@ fn individual_treasure(cr: u8) -> Treasure {
     };
 
     let d_100 = DieRoll::new("d100").roll();
-    match table.iter().find(|row| is_in_range(d_100, row.roll.as_str())) {
-        Some(row) => row.generate(),
+    match select_record(&table, d_100) {
+        Some(tres) => tres.generate(),
         None => Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
     }
+}
+
+// FIXME: would be good to make this generic
+fn select_record(table: &Vec<IndividualTreasure>, d_100: u16) -> Option<&IndividualTreasure> {
+    table.iter().find(|row| is_in_range(d_100, row.roll.as_str()))
 }
 
 fn is_in_range(d_100: u16, range: &str) -> bool {

@@ -1,8 +1,8 @@
-use crate::treasure::Treasure;
-use crate::dice::DieRoll;
-
 use std::env;
 use std::process;
+
+use crate::dice::DieRoll;
+use crate::treasure::Treasure;
 
 #[derive(Debug, Deserialize)]
 pub struct IndividualTreasure {
@@ -48,8 +48,4 @@ impl IndividualTreasure {
 
         table_items
     }
-
-//    pub fn select(&self, d_100: u16) -> Treasure {
-//
-//    }
 }
