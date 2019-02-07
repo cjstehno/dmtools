@@ -49,6 +49,30 @@ impl IndividualTreasure {
             pp: DieRoll::new(&self.pp).roll(),
         }
     }
+
+    fn load(path: &str) -> Vec<IndividualTreasure> {
+        let mut table_items = vec![];
+
+        let full_path = format!("{}/{}", env::current_dir().expect("path").display(), path);
+        println!("File: {}", full_path);
+
+        let mut reader = csv::Reader::from_path(full_path).expect("path reader");
+
+        for result in reader.deserialize() {
+            match result {
+                Ok(record) => {
+                    let treasure_record: IndividualTreasure = record;
+                    table_items.push(treasure_record);
+                }
+                Err(err) => {
+                    println!("Error reading CSV from file ({}): {}", path, err);
+                    process::exit(1);
+                }
+            }
+        }
+
+        table_items
+    }
 }
 
 #[derive(Debug)]
@@ -114,26 +138,29 @@ fn main() {
 
     println!("Rolling {} {} CR-{} treasure(s).", rolls, if hoard { "hoard" } else { "individual" }, cr);
 
-    let treasure = individual_treasure(cr);
+    let treasure = if hoard {
+        hoard_treasure(cr)
+    } else {
+        individual_treasure(cr)
+    };
 
-    println!("Treasure (CR-{}): {:?}", cr, treasure);
+    println!("Treasure (CR-{} {}): {:?}", cr, if hoard { "Hoard" } else { "Individual" }, treasure);
+}
+
+fn hoard_treasure(cr: u8) -> Treasure {
+    // FIXME: temp
+    Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
 }
 
 fn individual_treasure(cr: u8) -> Treasure {
-    // TODO: use CR to find individual file
+    let table = match cr {
+        0...4 => IndividualTreasure::load("tables/individual-0-4.csv"),
+        _ => vec![]
+    };
 
-    // load the table data
-    let table = load_individual_table("tables/individual-0-4.csv");
-
-    // 1-100 random
-    let d_100 = rand::random::<u16>() % 100;
-    println!("d100: {}", d_100);
-
+    let d_100 = DieRoll::new("d100").roll();
     match table.iter().find(|row| is_in_range(d_100, row.roll.as_str())) {
-        Some(row) => {
-            println!("Row: {:?}", row);
-            row.generate()
-        }
+        Some(row) => row.generate(),
         None => Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
     }
 }
@@ -143,34 +170,5 @@ fn is_in_range(d_100: u16, range: &str) -> bool {
     let low: u16 = bounds[0].parse::<u16>().unwrap();
     let high: u16 = bounds[1].parse::<u16>().unwrap();
 
-    if d_100 >= low && d_100 <= high {
-        true
-    } else {
-        false
-    }
-}
-
-// TODO: maybe this should be part of IndividualTreasure
-fn load_individual_table(path: &str) -> Vec<IndividualTreasure> {
-    let mut table_items = vec![];
-
-    let full_path = format!("{}/{}", env::current_dir().expect("path").display(), path);
-    println!("File: {}", full_path);
-
-    let mut reader = csv::Reader::from_path(full_path).expect("path reader");
-
-    for result in reader.deserialize() {
-        match result {
-            Ok(record) => {
-                let treasure_record: IndividualTreasure = record;
-                table_items.push(treasure_record);
-            }
-            Err(err) => {
-                println!("Error reading CSV from file ({}): {}", path, err);
-                process::exit(1);
-            }
-        }
-    }
-
-    table_items
+    d_100 >= low && d_100 <= high
 }
