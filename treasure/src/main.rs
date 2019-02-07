@@ -1,126 +1,24 @@
+mod treasure;
+mod individual_treasure;
+mod dice;
+
 extern crate clap;
 extern crate csv;
 extern crate rand;
-extern crate regex;
+
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use std::env;
-use std::process;
 use std::vec::Vec;
 
+use crate::treasure::Treasure;
+use crate::individual_treasure::IndividualTreasure;
+use crate::dice::DieRoll;
+
 use clap::{App, Arg};
-use regex::Regex;
 
 // FIXME: better error handling
-
-#[derive(Debug)]
-struct Treasure {
-    cp: u16,
-    sp: u16,
-    ep: u16,
-    gp: u16,
-    pp: u16,//,
-//    gems: u32,
-//    gemValue: u32,
-//    art: u32,
-//    artValue: u32,
-//    magic: ?
-}
-
-#[derive(Debug, Deserialize)]
-struct IndividualTreasure {
-    roll: String,
-    cp: String,
-    sp: String,
-    ep: String,
-    gp: String,
-    pp: String,
-}
-
-impl IndividualTreasure {
-    fn generate(&self) -> Treasure {
-        Treasure {
-            cp: DieRoll::new(&self.cp).roll(),
-            sp: DieRoll::new(&self.sp).roll(),
-            ep: DieRoll::new(&self.ep).roll(),
-            gp: DieRoll::new(&self.gp).roll(),
-            pp: DieRoll::new(&self.pp).roll(),
-        }
-    }
-
-    fn load(path: &str) -> Vec<IndividualTreasure> {
-        let mut table_items = vec![];
-
-        let full_path = format!("{}/{}", env::current_dir().expect("path").display(), path);
-        println!("File: {}", full_path);
-
-        let mut reader = csv::Reader::from_path(full_path).expect("path reader");
-
-        for result in reader.deserialize() {
-            match result {
-                Ok(record) => {
-                    let treasure_record: IndividualTreasure = record;
-                    table_items.push(treasure_record);
-                }
-                Err(err) => {
-                    println!("Error reading CSV from file ({}): {}", path, err);
-                    process::exit(1);
-                }
-            }
-        }
-
-        table_items
-    }
-}
-
-#[derive(Debug)]
-struct DieRoll {
-    count: u16,
-    d: u16,
-    modifier: u16,
-    multiplier: u16,
-}
-
-impl DieRoll {
-    fn new(dice: &str) -> DieRoll {
-        if dice == "-" {
-            DieRoll { count: 0, d: 0, modifier: 0, multiplier: 0 }
-        } else {
-            let rx = Regex::new("([0-9]*)d([0-9]*)[+]?([0-9]*)[x]?([0-9]*)").unwrap();
-            println!("Matches: {}", rx.is_match(dice));
-
-            let groups = rx.captures(dice).unwrap();
-
-            DieRoll {
-                count: DieRoll::str_to_num(groups.get(1).unwrap().as_str(), 1),
-                d: DieRoll::str_to_num(groups.get(2).unwrap().as_str(), 0),
-                modifier: DieRoll::str_to_num(groups.get(3).unwrap().as_str(), 0),
-                multiplier: DieRoll::str_to_num(groups.get(4).unwrap().as_str(), 1),
-            }
-        }
-    }
-
-    fn str_to_num(value: &str, default_value: u16) -> u16 {
-        value.parse().unwrap_or(default_value)
-    }
-
-    fn roll(&self) -> u16 {
-        let mut rolls = 0;
-
-        let dice = &self;
-
-        // TODO: use fold iter here
-        for _r in 0..dice.count {
-            let rolled = (rand::random::<u16>() % dice.d) + 1;
-            println!("Rolled ({}): {}", dice.d, rolled);
-            rolls += rolled;
-        }
-
-        (rolls + dice.modifier) * dice.multiplier
-    }
-}
 
 fn main() {
     let matches = App::new("Treasure Calculator")
