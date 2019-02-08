@@ -20,24 +20,29 @@ fn main() {
         .version("0.0.1")
         .author("Christopher J. Stehno <chris@stehno.com>")
         .about("Calculates random treasure for D&D 5e.")
+        .arg(Arg::with_name("individual").long("individual").help("Generated individual treasure (default)."))
+        .arg(Arg::with_name("verbose").long("verbose").help("Turns on verbose operation logging information."))
         .arg(Arg::with_name("hoard").long("hoard").help("Generates hoard treasure."))
         .arg(Arg::with_name("cr").long("cr").short("c").value_name("CHALLENGE-RATING").help("Specifies the Challenge Rating.").required(true).takes_value(true))
-        .arg(Arg::with_name("rolls").long("rolls").short("r").value_name("COUNT").help("Number of treasure rolls to generate.").takes_value(true))
+        .arg(Arg::with_name("rolls").long("rolls").short("r").value_name("# ROLLS").help("Number of treasure rolls to generate.").takes_value(true))
         .get_matches();
 
     let cr: u8 = matches.value_of("cr").unwrap().parse().unwrap();
     let rolls: u8 = matches.value_of("rolls").unwrap_or("1").parse().unwrap();
-    let hoard: bool = matches.occurrences_of("hoard") > 0;
+    let verbose: bool = matches.occurrences_of("verbose") > 0;
+    let generate_hoard: bool = matches.occurrences_of("hoard") > 0;
 
-    println!("Rolling {} {} CR-{} treasure(s).", rolls, if hoard { "hoard" } else { "individual" }, cr);
+    // TODO: support verbose
+    // TODO: support multiple  rolls
 
-    let treasure = if hoard {
-        roll_treasure("hoard", cr)
-    } else {
-        roll_treasure("individual", cr)
+    println!("Rolling {} {} CR-{} treasure(s).", rolls, if generate_hoard { "hoard" } else { "individual" }, cr);
+
+    let treasure = match generate_hoard {
+        true => roll_treasure("hoard", cr),
+        false => roll_treasure("individual", cr)
     };
 
-    println!("Treasure (CR-{} {}): {:?}", cr, if hoard { "Hoard" } else { "Individual" }, treasure);
+    println!("Treasure (CR-{} {}): {:?}", cr, if generate_hoard { "Hoard" } else { "Individual" }, treasure);
 }
 
 fn roll_treasure(table_type: &str, cr: u8) -> Treasure {
