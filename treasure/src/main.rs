@@ -10,11 +10,13 @@ use std::vec::Vec;
 use clap::{App, Arg};
 
 use crate::dice::DieRoll;
+use crate::hoard_treasure::HoardTreasure;
 use crate::individual_treasure::IndividualTreasure;
 use crate::treasure::Treasure;
 
 mod treasure;
 mod individual_treasure;
+mod hoard_treasure;
 mod dice;
 
 // FIXME: better error handling
@@ -45,25 +47,39 @@ fn main() {
 }
 
 fn hoard_treasure(cr: u8) -> Treasure {
-    // FIXME: temp
-    Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
+    let table = match cr {
+        0...4 => HoardTreasure::load("tables/hoard-0-4.csv"),
+        _ => vec![]
+    };
+
+    let d_100 = DieRoll::new("d100").roll();
+    match select_hoard_record(&table, d_100) {
+        Some(tres) => tres.generate(),
+        None => Treasure::empty()
+    }
 }
 
 fn individual_treasure(cr: u8) -> Treasure {
     let table = match cr {
         0...4 => IndividualTreasure::load("tables/individual-0-4.csv"),
-        _ => vec![]
+        5...10 => IndividualTreasure::load("tables/individual-5-10.csv"),
+        11...16 => IndividualTreasure::load("tables/individual-11-16.csv"),
+        _ => IndividualTreasure::load("tables/individual-17-up.csv")
     };
 
     let d_100 = DieRoll::new("d100").roll();
     match select_record(&table, d_100) {
         Some(tres) => tres.generate(),
-        None => Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 }
+        None => Treasure::empty()
     }
 }
 
 // FIXME: would be good to make this generic
 fn select_record(table: &Vec<IndividualTreasure>, d_100: u16) -> Option<&IndividualTreasure> {
+    table.iter().find(|row| is_in_range(d_100, row.roll.as_str()))
+}
+
+fn select_hoard_record(table: &Vec<HoardTreasure>, d_100: u16) -> Option<&HoardTreasure> {
     table.iter().find(|row| is_in_range(d_100, row.roll.as_str()))
 }
 

@@ -1,0 +1,6 @@
+- refactor treasures into a single treasure definition and treasure value object
+- refactor csv reading to iterate and find the die-selected record and then create the object from that
+- add a verbose mode to provide the logging information (silent by default)
+- pretty up the output
+- add magic item tables
+- add art/gem tables
