@@ -7,14 +7,14 @@ pub struct Treasure {
     pub pp: u16,
     pub gems: u16,
     pub gem_value: u16,
-//    art: u32,
-//    artValue: u32,
-//    magic: ?
+    pub art: u16,
+    pub art_value: u16,
+    pub magic: String,
 }
 
 impl Treasure {
     pub fn empty() -> Treasure {
-        Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0, gems: 0, gem_value: 0 }
+        Treasure { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0, gems: 0, gem_value: 0, art: 0, art_value: 0, magic:String::from("") }
     }
 }
 

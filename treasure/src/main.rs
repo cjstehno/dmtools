@@ -5,21 +5,15 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use std::vec::Vec;
-
 use clap::{App, Arg};
 
 use crate::dice::DieRoll;
-use crate::hoard_treasure::HoardTreasure;
-use crate::individual_treasure::IndividualTreasure;
 use crate::treasure::Treasure;
+use crate::treasure_definition::TreasureDefinition;
 
 mod treasure;
-mod individual_treasure;
-mod hoard_treasure;
+mod treasure_definition;
 mod dice;
-
-// FIXME: better error handling
 
 fn main() {
     let matches = App::new("Treasure Calculator")
@@ -38,55 +32,26 @@ fn main() {
     println!("Rolling {} {} CR-{} treasure(s).", rolls, if hoard { "hoard" } else { "individual" }, cr);
 
     let treasure = if hoard {
-        hoard_treasure(cr)
+        roll_treasure("hoard", cr)
     } else {
-        individual_treasure(cr)
+        roll_treasure("individual", cr)
     };
 
     println!("Treasure (CR-{} {}): {:?}", cr, if hoard { "Hoard" } else { "Individual" }, treasure);
 }
 
-fn hoard_treasure(cr: u8) -> Treasure {
-    let table = match cr {
-        0...4 => HoardTreasure::load("tables/hoard-0-4.csv"),
-        _ => vec![]
+fn roll_treasure(table_type: &str, cr: u8) -> Treasure {
+    let table_path = match cr {
+        0...4 => format!("tables/{}-0-4.csv", table_type),
+        5...10 => format!("tables/{}-5-10.csv", table_type),
+        11...16 => format!("tables/{}-11-16.csv", table_type),
+        _ => format!("tables/{}-17-up.csv", table_type)
     };
 
     let d_100 = DieRoll::new("d100").roll();
-    match select_hoard_record(&table, d_100) {
-        Some(tres) => tres.generate(),
+
+    match TreasureDefinition::select(table_path.as_str(), d_100) {
+        Some(treasure) => treasure.generate(),
         None => Treasure::empty()
     }
-}
-
-fn individual_treasure(cr: u8) -> Treasure {
-    let table = match cr {
-        0...4 => IndividualTreasure::load("tables/individual-0-4.csv"),
-        5...10 => IndividualTreasure::load("tables/individual-5-10.csv"),
-        11...16 => IndividualTreasure::load("tables/individual-11-16.csv"),
-        _ => IndividualTreasure::load("tables/individual-17-up.csv")
-    };
-
-    let d_100 = DieRoll::new("d100").roll();
-    match select_record(&table, d_100) {
-        Some(tres) => tres.generate(),
-        None => Treasure::empty()
-    }
-}
-
-// FIXME: would be good to make this generic
-fn select_record(table: &Vec<IndividualTreasure>, d_100: u16) -> Option<&IndividualTreasure> {
-    table.iter().find(|row| is_in_range(d_100, row.roll.as_str()))
-}
-
-fn select_hoard_record(table: &Vec<HoardTreasure>, d_100: u16) -> Option<&HoardTreasure> {
-    table.iter().find(|row| is_in_range(d_100, row.roll.as_str()))
-}
-
-fn is_in_range(d_100: u16, range: &str) -> bool {
-    let bounds: Vec<&str> = range.split("-").collect();
-    let low: u16 = bounds[0].parse::<u16>().unwrap();
-    let high: u16 = bounds[1].parse::<u16>().unwrap();
-
-    d_100 >= low && d_100 <= high
 }

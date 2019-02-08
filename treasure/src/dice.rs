@@ -12,7 +12,7 @@ pub struct DieRoll {
 
 impl DieRoll {
     pub fn new(dice: &str) -> DieRoll {
-        if dice == "-" {
+        if dice.is_empty() || dice == "-" {
             DieRoll { count: 0, d: 0, modifier: 0, multiplier: 0 }
         } else {
             let rx = Regex::new("([0-9]*)d([0-9]*)[+]?([0-9]*)[x]?([0-9]*)").unwrap();
