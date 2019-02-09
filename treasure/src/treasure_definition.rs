@@ -29,6 +29,12 @@ pub struct TreasureDefinition {
 
     #[serde(default)]
     pub magic_table: String,
+
+    #[serde(default)]
+    pub magic_2: String,
+
+    #[serde(default)]
+    pub magic_table_2: String
 }
 
 impl TreasureDefinition {
@@ -73,9 +79,20 @@ impl TreasureDefinition {
     fn contains_roll(&self, d_100: u16) -> bool {
         let roll = &self.roll;
         let bounds: Vec<&str> = roll.split("-").collect();
-        let low: u16 = bounds[0].parse::<u16>().unwrap();
-        let high: u16 = bounds[1].parse::<u16>().unwrap();
 
-        d_100 >= low && d_100 <= high
+        let low_high = match bounds.len() {
+            1 => {
+                let low: u16 = bounds[0].parse::<u16>().unwrap();
+                let high: u16 = bounds[0].parse::<u16>().unwrap();
+                (low, high)
+            },
+            _ => {
+                let low: u16 = bounds[0].parse::<u16>().unwrap();
+                let high: u16 = bounds[1].parse::<u16>().unwrap();
+                (low, high)
+            }
+        };
+
+        d_100 >= low_high.0 && d_100 <= low_high.1
     }
 }

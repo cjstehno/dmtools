@@ -9,7 +9,7 @@ pub struct Treasure {
     pub gem_value: u16,
     pub art: u16,
     pub art_value: u16,
-    pub magic: String,
+    pub magic: String, // FIXME: need to account for magic_2
 }
 
 impl Treasure {
