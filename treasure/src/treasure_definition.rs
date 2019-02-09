@@ -34,7 +34,7 @@ pub struct TreasureDefinition {
     pub magic_2: String,
 
     #[serde(default)]
-    pub magic_table_2: String
+    pub magic_table_2: String,
 }
 
 impl TreasureDefinition {
@@ -49,7 +49,7 @@ impl TreasureDefinition {
             gem_value: TreasureDefinition::string_to_number(&self.gem_value),
             art: DieRoll::new(&self.art).roll(),
             art_value: TreasureDefinition::string_to_number(&self.art_value),
-            magic: "" .to_string()// FIXME: support *&self.magic,
+            magic: "".to_string(),// FIXME: support *&self.magic,
         }
     }
 
@@ -77,19 +77,18 @@ impl TreasureDefinition {
     }
 
     fn contains_roll(&self, d_100: u16) -> bool {
-        let roll = &self.roll;
-        let bounds: Vec<&str> = roll.split("-").collect();
+        let bounds: Vec<&str> = (&self.roll).split("-").collect();
 
         let low_high = match bounds.len() {
             1 => {
-                let low: u16 = bounds[0].parse::<u16>().unwrap();
-                let high: u16 = bounds[0].parse::<u16>().unwrap();
-                (low, high)
-            },
+                let single: u16 = bounds[0].parse::<u16>().unwrap();
+                (single, single)
+            }
             _ => {
-                let low: u16 = bounds[0].parse::<u16>().unwrap();
-                let high: u16 = bounds[1].parse::<u16>().unwrap();
-                (low, high)
+                (
+                    bounds[0].parse::<u16>().unwrap(),
+                    bounds[1].parse::<u16>().unwrap()
+                )
             }
         };
 
