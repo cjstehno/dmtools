@@ -1,5 +1,8 @@
 extern crate clap;
 extern crate csv;
+extern crate fern;
+#[macro_use]
+extern crate log;
 extern crate rand;
 extern crate serde;
 #[macro_use]
@@ -21,7 +24,7 @@ fn main() {
         .author("Christopher J. Stehno <chris@stehno.com>")
         .about("Calculates random treasure for D&D 5e.")
         .arg(Arg::with_name("individual").long("individual").help("Generated individual treasure (default)."))
-        .arg(Arg::with_name("verbose").long("verbose").help("Turns on verbose operation logging information."))
+        .arg(Arg::with_name("verbose").long("verbose").short("v").help("Turns on verbose operation logging information."))
         .arg(Arg::with_name("hoard").long("hoard").help("Generates hoard treasure."))
         .arg(Arg::with_name("cr").long("cr").short("c").value_name("CHALLENGE-RATING").help("Specifies the Challenge Rating.").required(true).takes_value(true))
         .arg(Arg::with_name("rolls").long("rolls").short("r").value_name("# ROLLS").help("Number of treasure rolls to generate.").takes_value(true))
@@ -32,8 +35,11 @@ fn main() {
     let verbose: bool = matches.occurrences_of("verbose") > 0;
     let generate_hoard: bool = matches.occurrences_of("hoard") > 0;
 
-    // TODO: support verbose
-    // TODO: support multiple  rolls
+    if verbose {
+        enable_verbose().unwrap();
+    }
+
+    debug!("I am debugging: {}", "yes");
 
     println!("Rolling {} {} CR-{} treasure(s).", rolls, if generate_hoard { "hoard" } else { "individual" }, cr);
 
@@ -59,4 +65,16 @@ fn roll_treasure(table_type: &str, cr: u8) -> Treasure {
         Some(treasure) => treasure.generate(),
         None => Treasure::empty()
     }
+}
+
+fn enable_verbose() -> Result<(), fern::InitError> {
+    fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!("[{}] {}", record.level(), message))
+        })
+        .level(log::LevelFilter::Debug)
+        .chain(std::io::stdout())
+        .apply()?;
+
+    Ok(())
 }

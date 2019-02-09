@@ -62,7 +62,7 @@ impl TreasureDefinition {
 
     pub fn select(table_path: &str, d_100: u16) -> Option<TreasureDefinition> {
         let full_path = format!("{}/{}", env::current_dir().expect("path").display(), table_path);
-        println!("File: {}", full_path);
+        debug!("File: {}", full_path);
 
         let mut reader = csv::Reader::from_path(full_path).expect("path reader");
 
