@@ -10,6 +10,8 @@ pub struct DieRoll {
     pub multiplier: u16,
 }
 
+// FIXME: test description of "1"
+
 impl DieRoll {
     pub fn new(dice: &str) -> DieRoll {
         if dice.is_empty() || dice == "-" {
