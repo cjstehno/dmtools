@@ -1,8 +1,6 @@
 
-- pretty up the output
 - better error handling
 - add magic item tables
-- add art/gem tables
 - support for multiple rolls?
 
 - figure out how to move tests to separate files

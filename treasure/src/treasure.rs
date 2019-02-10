@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::gems::Art;
 use crate::gems::Gem;
 
@@ -11,6 +13,32 @@ pub struct Treasure {
     pub gems: Vec<Gem>,
     pub art: Vec<Art>,
     pub magic: String, // FIXME: need to account for magic_2
+}
+
+impl fmt::Display for Treasure {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut output = String::from(" -- Coins --\n");
+
+        output.push_str(format!("  - {}cp, {}sp, {}ep, {}gp, {}pp\n", self.cp, self.sp, self.ep, self.gp, self.pp).as_str());
+
+        if !self.gems.is_empty(){
+            output.push_str(" -- Gems --\n");
+        }
+
+        for gem in self.gems.iter() {
+            output.push_str(format!("  - {} ({}gp)\n", gem.description, gem.value).as_str());
+        }
+
+        if !self.art.is_empty(){
+            output.push_str(" -- Artwork --\n");
+        }
+
+        for art in self.art.iter() {
+            output.push_str(format!("  - {} ({}gp)\n", art.description, art.value).as_str());
+        }
+
+        writeln!(f, "{}", output)
+    }
 }
 
 impl Treasure {
