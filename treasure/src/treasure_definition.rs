@@ -1,6 +1,7 @@
 use std::env;
 
 use crate::dice::DieRoll;
+use crate::gems::Gem;
 use crate::treasure::Treasure;
 
 #[derive(Debug, Deserialize)]
@@ -45,8 +46,10 @@ impl TreasureDefinition {
             ep: DieRoll::new(&self.ep).roll(),
             gp: DieRoll::new(&self.gp).roll(),
             pp: DieRoll::new(&self.pp).roll(),
-            gems: DieRoll::new(&self.gems).roll(),
-            gem_value: TreasureDefinition::string_to_number(&self.gem_value),
+            gems: Gem::roll_gems(
+                DieRoll::new(&self.gems).roll(),
+                TreasureDefinition::string_to_number(&self.gem_value),
+            ),
             art: DieRoll::new(&self.art).roll(),
             art_value: TreasureDefinition::string_to_number(&self.art_value),
             magic: "".to_string(),// FIXME: support *&self.magic,
@@ -60,7 +63,23 @@ impl TreasureDefinition {
         }
     }
 
-    pub fn select(table_path: &str, d_100: u16) -> Option<TreasureDefinition> {
+    pub fn roll_treasure(table_type: &str, cr: u8) -> Treasure {
+        let table_path = match cr {
+            0...4 => format!("tables/{}-0-4.csv", table_type),
+            5...10 => format!("tables/{}-5-10.csv", table_type),
+            11...16 => format!("tables/{}-11-16.csv", table_type),
+            _ => format!("tables/{}-17-up.csv", table_type)
+        };
+
+        let d_100 = DieRoll::new("d100").roll();
+
+        match TreasureDefinition::select(table_path.as_str(), d_100) {
+            Some(treasure) => treasure.generate(),
+            None => Treasure::empty()
+        }
+    }
+
+    fn select(table_path: &str, d_100: u16) -> Option<TreasureDefinition> {
         let full_path = format!("{}/{}", env::current_dir().expect("path").display(), table_path);
         debug!("File: {}", full_path);
 

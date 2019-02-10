@@ -10,13 +10,12 @@ extern crate serde_derive;
 
 use clap::{App, Arg};
 
-use crate::dice::DieRoll;
-use crate::treasure::Treasure;
 use crate::treasure_definition::TreasureDefinition;
 
 mod treasure;
 mod treasure_definition;
 mod dice;
+mod gems; // TODO: rename to jewelry?
 
 fn main() {
     let matches = App::new("Treasure Calculator")
@@ -44,27 +43,11 @@ fn main() {
     println!("Rolling {} {} CR-{} treasure(s).", rolls, if generate_hoard { "hoard" } else { "individual" }, cr);
 
     let treasure = match generate_hoard {
-        true => roll_treasure("hoard", cr),
-        false => roll_treasure("individual", cr)
+        true => TreasureDefinition::roll_treasure("hoard", cr),
+        false => TreasureDefinition::roll_treasure("individual", cr)
     };
 
     println!("Treasure (CR-{} {}): {:?}", cr, if generate_hoard { "Hoard" } else { "Individual" }, treasure);
-}
-
-fn roll_treasure(table_type: &str, cr: u8) -> Treasure {
-    let table_path = match cr {
-        0...4 => format!("tables/{}-0-4.csv", table_type),
-        5...10 => format!("tables/{}-5-10.csv", table_type),
-        11...16 => format!("tables/{}-11-16.csv", table_type),
-        _ => format!("tables/{}-17-up.csv", table_type)
-    };
-
-    let d_100 = DieRoll::new("d100").roll();
-
-    match TreasureDefinition::select(table_path.as_str(), d_100) {
-        Some(treasure) => treasure.generate(),
-        None => Treasure::empty()
-    }
 }
 
 fn enable_verbose() -> Result<(), fern::InitError> {
