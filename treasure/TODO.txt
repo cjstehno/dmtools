@@ -1,3 +1,6 @@
+FIXME: need unit tests for all tables to ensure proper loading
+- good time to generalize the table-loading code
+
 
 - better error handling
 - add magic item tables

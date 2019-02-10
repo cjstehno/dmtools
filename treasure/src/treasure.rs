@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::gems::Art;
 use crate::gems::Gem;
+use crate::gems::MagicItem;
 
 #[derive(Debug)]
 pub struct Treasure {
@@ -12,7 +13,7 @@ pub struct Treasure {
     pub pp: u16,
     pub gems: Vec<Gem>,
     pub art: Vec<Art>,
-    pub magic: String, // FIXME: need to account for magic_2
+    pub magic: Vec<MagicItem>
 }
 
 impl fmt::Display for Treasure {
@@ -37,6 +38,14 @@ impl fmt::Display for Treasure {
             output.push_str(format!("  - {} ({}gp)\n", art.description, art.value).as_str());
         }
 
+        if !self.magic.is_empty() {
+            output.push_str(" -- Magic Items --\n");
+        }
+
+        for item in self.magic.iter() {
+            output.push_str(format!("  - {}\n", item.description).as_str());
+        }
+
         writeln!(f, "{}", output)
     }
 }
@@ -51,7 +60,7 @@ impl Treasure {
             pp: 0,
             gems: vec![],
             art: vec![],
-            magic: String::from(""),
+            magic: vec![],
         }
     }
 }

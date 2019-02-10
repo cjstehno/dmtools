@@ -116,3 +116,47 @@ impl Art {
         }
     }
 }
+
+#[derive(Debug)]
+pub struct MagicItem {
+    pub description: String
+}
+
+impl MagicItem {
+    pub fn roll_magic(count: u16, table: &str, count_2: u16, table_2: &str) -> Vec<MagicItem> {
+        let mut first_table = MagicItem::roll_magic_table(count, table);
+        let mut second_table = MagicItem::roll_magic_table(count_2, table_2);
+
+        first_table.append(&mut second_table);
+
+        return first_table;
+    }
+
+    fn roll_magic_table(count: u16, table: &str) -> Vec<MagicItem> {
+        if count > 0 {
+            let table_path = format!("tables/magic-{}.csv", table);
+            let selection_die = DieRoll::new("d100");
+
+            debug!("Selecting {} magic items (Table {})", count, table);
+
+            let mut magic_items: Vec<MagicItem> = vec![];
+
+            // FIXME: verify bounds!
+            for _n in 0..count {
+                let die_value = selection_die.roll();
+                match ValuableObject::select(table_path.as_str(), die_value) {
+                    Some(val_obj) => {
+                        let item = MagicItem { description: val_obj.description };
+                        debug!("Selected magic item: {:?}", item);
+                        magic_items.push(item)
+                    }
+                    None => ()
+                }
+            }
+
+            return magic_items;
+        } else {
+            vec![]
+        }
+    }
+}
