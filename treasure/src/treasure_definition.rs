@@ -104,6 +104,7 @@ impl TreasureDefinition {
         return None;
     }
 
+    // FIXME: pull this into util or something
     fn contains_roll(&self, d_100: u16) -> bool {
         let bounds: Vec<&str> = (&self.roll).split("-").collect();
 

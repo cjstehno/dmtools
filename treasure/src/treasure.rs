@@ -23,7 +23,7 @@ impl fmt::Display for Treasure {
         output.push_str(format!("  - {}cp, {}sp, {}ep, {}gp, {}pp\n", self.cp, self.sp, self.ep, self.gp, self.pp).as_str());
 
         if !self.gems.is_empty(){
-            output.push_str(" -- Gems --\n");
+            output.push_str("\n -- Gems --\n");
         }
 
         for gem in self.gems.iter() {
@@ -31,7 +31,7 @@ impl fmt::Display for Treasure {
         }
 
         if !self.art.is_empty(){
-            output.push_str(" -- Artwork --\n");
+            output.push_str("\n -- Artwork --\n");
         }
 
         for art in self.art.iter() {
@@ -39,7 +39,7 @@ impl fmt::Display for Treasure {
         }
 
         if !self.magic.is_empty() {
-            output.push_str(" -- Magic Items --\n");
+            output.push_str("\n -- Magic Items --\n");
         }
 
         for item in self.magic.iter() {

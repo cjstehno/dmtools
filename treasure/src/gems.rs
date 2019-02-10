@@ -26,7 +26,26 @@ impl ValuableObject {
     }
 
     fn contains_roll(&self, rolled: u16) -> bool {
-        (&self.roll).parse::<u16>().unwrap() == rolled
+        if self.roll.contains("-") {
+            let bounds: Vec<&str> = (&self.roll).split("-").collect();
+
+            let low_high = match bounds.len() {
+                1 => {
+                    let single: u16 = bounds[0].parse::<u16>().unwrap();
+                    (single, single)
+                }
+                _ => {
+                    (
+                        bounds[0].parse::<u16>().unwrap(),
+                        bounds[1].parse::<u16>().unwrap()
+                    )
+                }
+            };
+
+            rolled >= low_high.0 && rolled <= low_high.1
+        } else {
+            (&self.roll).parse::<u16>().unwrap() == rolled
+        }
     }
 }
 
@@ -159,4 +178,19 @@ impl MagicItem {
             vec![]
         }
     }
+}
+
+//
+// TESTS
+//
+
+#[test]
+fn test_loading_magic_a() {
+    let valuable_1 = ValuableObject::select("tables/magic-A.csv", 1).unwrap();
+    assert_eq!(valuable_1.roll, "1-50");
+    assert_eq!(valuable_1.description, "Potion of healing");
+
+    let valuable_100 = ValuableObject::select("tables/magic-A.csv", 100).unwrap();
+    assert_eq!(valuable_100.roll, "100");
+    assert_eq!(valuable_100.description, "Driftglobe");
 }
