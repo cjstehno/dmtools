@@ -2,6 +2,7 @@ use std::env;
 
 use crate::dice::DieRoll;
 use crate::gems::Gem;
+use crate::gems::Art;
 use crate::treasure::Treasure;
 
 #[derive(Debug, Deserialize)]
@@ -50,8 +51,10 @@ impl TreasureDefinition {
                 DieRoll::new(&self.gems).roll(),
                 TreasureDefinition::string_to_number(&self.gem_value),
             ),
-            art: DieRoll::new(&self.art).roll(),
-            art_value: TreasureDefinition::string_to_number(&self.art_value),
+            art: Art::roll_art(
+                DieRoll::new(&self.art).roll(),
+                TreasureDefinition::string_to_number(&self.art_value)
+            ),
             magic: "".to_string(),// FIXME: support *&self.magic,
         }
     }

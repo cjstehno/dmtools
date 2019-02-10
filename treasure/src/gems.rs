@@ -75,14 +75,44 @@ impl Gem {
 }
 
 #[derive(Debug)]
-pub struct Artwork {
-    pub count: u16,
+pub struct Art {
     pub value: u16,
     pub description: String,
 }
 
-impl Artwork {
+impl Art {
+    pub fn roll_art(count: u16, value: u16) -> Vec<Art> {
+        if count > 0 {
+            let table_path = format!("tables/art-{}gp.csv", value);
+            let selection_die = DieRoll::new(match value {
+                25 => "1d10",
+                250 => "1d10",
+                750 => "1d10",
+                2500 => "1d10",
+                7500 => "1d8",
+                _ => "0"
+            });
 
+            debug!("Selecting {} {}gp artwork", count, value);
+
+            let mut arts: Vec<Art> = vec![];
+
+            // FIXME: verify bounds!
+            for _n in 0..count {
+                let die_value = selection_die.roll();
+                match ValuableObject::select(table_path.as_str(), die_value) {
+                    Some(val_obj) => {
+                        let art = Art { value, description: val_obj.description };
+                        debug!("Selected artwork: {:?}", art);
+                        arts.push(art)
+                    }
+                    None => ()
+                }
+            }
+
+            return arts;
+        } else {
+            vec![]
+        }
+    }
 }
-
-// FIXME: implement artwork
