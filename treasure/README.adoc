@@ -1,5 +1,7 @@
 = Treasure Generator
 
+A D&D 5e treasure generator tool.
+
 == Building
 
 Building for development:
