@@ -1,10 +1,5 @@
-FIXME: need unit tests for all tables to ensure proper loading
-- good time to generalize the table-loading code
-
-
+- refactoring and duplication reduction
 - better error handling
-- add magic item tables
-- support for multiple rolls?
 
 - figure out how to move tests to separate files
 - coalesce art/gems that are same description
