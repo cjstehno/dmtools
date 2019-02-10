@@ -29,10 +29,9 @@ fn main() {
         .get_matches();
 
     let cr: u8 = matches.value_of("cr").unwrap().parse().unwrap();
-    let verbose_count = matches.occurrences_of("verbose");
     let generate_hoard: bool = matches.occurrences_of("hoard") > 0;
 
-    enable_verbose(verbose_count);
+    enable_verbose(matches.occurrences_of("verbose"));
 
     let treasure = match generate_hoard {
         true => TreasureDefinition::roll_treasure("hoard", cr),

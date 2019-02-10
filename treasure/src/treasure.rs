@@ -46,7 +46,7 @@ impl fmt::Display for Treasure {
             output.push_str(format!("  - {}\n", item.description).as_str());
         }
 
-        writeln!(f, "{}", output)
+        write!(f, "{}", output)
     }
 }
 
