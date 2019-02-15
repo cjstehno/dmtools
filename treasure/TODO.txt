@@ -3,3 +3,5 @@
 
 - figure out how to move tests to separate files
 - coalesce art/gems that are same description
+
+- add ability to roll random gems, art, magic, and coins alone
