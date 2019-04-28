@@ -10,7 +10,7 @@ args:
       takes_value: false
       help: Generates individual treasure (default).
   - hoard:
-      long: horde
+      long: hoard
       required: false
       takes_value: false
       help: Generates hoard treasure.

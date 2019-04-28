@@ -22,7 +22,7 @@ impl fmt::Display for DieRoll {
 impl DieRoll {
     pub fn new(dice: &str) -> DieRoll {
         let roller = if dice.is_empty() || dice == "-" {
-            DieRoll { count: 0, d: 0, modifier: 0, multiplier: 0 }
+            DieRoll { count: 0, d: 1, modifier: 0, multiplier: 0 }
         } else if !dice.contains("d") {
             // consider it a constant
             DieRoll { count: DieRoll::str_to_num(dice, 1), d: 1, modifier: 0, multiplier: 1 }
@@ -57,6 +57,8 @@ impl DieRoll {
         let mut rolls = 0;
 
         let dice = &self;
+
+        trace!("Rolling: {}", dice);
 
         let mut rng = rand::thread_rng();
         let die = Uniform::from(1..dice.d + 1);
@@ -116,5 +118,25 @@ fn test_constant_die_roll() {
     for _ in 0..100 {
         let rolled = constant_value.roll();
         assert_eq!(2, rolled)
+    }
+}
+
+#[test]
+fn test_constant_zero_die_roll() {
+    let constant_value = DieRoll::new("0");
+
+    for _ in 0..100 {
+        let rolled = constant_value.roll();
+        assert_eq!(0, rolled)
+    }
+}
+
+#[test]
+fn test_rolling_zero_dice() {
+    let zero = DieRoll::new("0d1+0x0");
+
+    for _ in 0..100 {
+        let rolled = zero.roll();
+        assert_eq!(0, rolled);
     }
 }

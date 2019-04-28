@@ -29,7 +29,7 @@ fn main() {
     let cr: u8 = matches.value_of("cr").unwrap().parse().unwrap();
     let generate_hoard: bool = matches.occurrences_of("hoard") > 0;
 
-    enable_verbose(matches.occurrences_of("verbose"));
+    configure_logging(matches.occurrences_of("verbose"));
 
     let treasure = match generate_hoard {
         true => TreasureDefinition::roll_treasure("hoard", cr),
@@ -39,15 +39,18 @@ fn main() {
     println!("CR-{} {} Treasure:\n{}", cr, if generate_hoard { "Hoard" } else { "Individual" }, treasure);
 }
 
-fn enable_verbose(verbose_count: u64) {
-    if verbose_count > 0 {
-        fern::Dispatch::new()
-            .format(|out, message, record| {
-                out.finish(format_args!("[{}] {}", record.level(), message))
-            })
-            .level(if verbose_count == 1 { log::LevelFilter::Debug } else { log::LevelFilter::Trace })
-            .chain(std::io::stdout())
-            .apply()
-            .unwrap();
-    }
+fn configure_logging(verbosity: u64) {
+    fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!("[{}] {}", record.level(), message))
+        })
+        .level(match verbosity {
+            0 => log::LevelFilter::Warn,
+            1 => log::LevelFilter::Info,
+            2 => log::LevelFilter::Debug,
+            _ => log::LevelFilter::Trace
+        })
+        .chain(std::io::stdout())
+        .apply()
+        .unwrap();
 }
