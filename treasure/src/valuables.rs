@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::env;
+use crate::treasure_definition::Tables;
 
 use crate::dice::DieRoll;
 
@@ -11,10 +11,11 @@ pub struct ValuableObject {
 
 impl ValuableObject {
     fn select(table_path: &str, die_roll: u16) -> Option<ValuableObject> {
-        let full_path = format!("{}/{}", env::current_dir().expect("path").display(), table_path);
-        debug!("File: {}", full_path);
+        trace!("Selecting valuable table: {}", table_path);
 
-        let mut reader = csv::Reader::from_path(full_path).expect("path reader");
+        let table_contents = Tables::get(table_path).expect("table");
+
+        let mut reader = csv::Reader::from_reader(table_contents.as_ref());
 
         for result in reader.deserialize() {
             let object_record: ValuableObject = result.unwrap();
@@ -61,7 +62,7 @@ impl Eq for Gem {}
 impl Gem {
     pub fn roll_gems(count: u16, value: u16) -> HashMap<Gem, u8> {
         if count > 0 {
-            let table_path = format!("tables/gems-{}gp.csv", value);
+            let table_path = format!("gems-{}gp.csv", value);
             let selection_die = DieRoll::new(match value {
                 10 => "1d12",
                 50 => "1d12",
@@ -112,7 +113,7 @@ impl Eq for Art {}
 impl Art {
     pub fn roll_art(count: u16, value: u16) -> HashMap<Art, u8> {
         if count > 0 {
-            let table_path = format!("tables/art-{}gp.csv", value);
+            let table_path = format!("art-{}gp.csv", value);
             let selection_die = DieRoll::new(match value {
                 25 => "1d10",
                 250 => "1d10",
@@ -172,7 +173,7 @@ impl MagicItem {
 
     fn roll_magic_table(count: u16, table: &str) -> HashMap<MagicItem, u8> {
         if count > 0 {
-            let table_path = format!("tables/magic-{}.csv", table);
+            let table_path = format!("magic-{}.csv", table);
             let selection_die = DieRoll::new("d100");
 
             debug!("Selecting {} magic items (Table {})", count, table);
@@ -210,11 +211,11 @@ impl MagicItem {
 
 #[test]
 fn test_loading_magic_a() {
-    let valuable_1 = ValuableObject::select("tables/magic-A.csv", 1).unwrap();
+    let valuable_1 = ValuableObject::select("magic-A.csv", 1).unwrap();
     assert_eq!(valuable_1.roll, "1-50");
     assert_eq!(valuable_1.description, "Potion of healing");
 
-    let valuable_100 = ValuableObject::select("tables/magic-A.csv", 100).unwrap();
+    let valuable_100 = ValuableObject::select("magic-A.csv", 100).unwrap();
     assert_eq!(valuable_100.roll, "100");
     assert_eq!(valuable_100.description, "Driftglobe");
 }

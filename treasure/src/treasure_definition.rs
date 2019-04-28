@@ -1,10 +1,10 @@
-use std::env;
-
 use crate::dice::DieRoll;
-use crate::valuables::Gem;
-use crate::valuables::Art;
-use crate::valuables::MagicItem;
 use crate::treasure::Treasure;
+use crate::valuables::{Art, Gem, MagicItem};
+
+#[derive(RustEmbed)]
+#[folder = "tables/"]
+pub struct Tables;
 
 #[derive(Debug, Deserialize)]
 pub struct TreasureDefinition {
@@ -54,14 +54,14 @@ impl TreasureDefinition {
             ),
             art: Art::roll_art(
                 DieRoll::new(&self.art).roll(),
-                TreasureDefinition::string_to_number(&self.art_value)
+                TreasureDefinition::string_to_number(&self.art_value),
             ),
             magic: MagicItem::roll_magic(
                 DieRoll::new(&self.magic).roll(),
                 &self.magic_table,
                 DieRoll::new(&self.magic_2).roll(),
                 &self.magic_table_2,
-            )
+            ),
         }
     }
 
@@ -74,10 +74,10 @@ impl TreasureDefinition {
 
     pub fn roll_treasure(table_type: &str, cr: u8) -> Treasure {
         let table_path = match cr {
-            0...4 => format!("tables/{}-0-4.csv", table_type),
-            5...10 => format!("tables/{}-5-10.csv", table_type),
-            11...16 => format!("tables/{}-11-16.csv", table_type),
-            _ => format!("tables/{}-17-up.csv", table_type)
+            0...4 => format!("{}-0-4.csv", table_type),
+            5...10 => format!("{}-5-10.csv", table_type),
+            11...16 => format!("{}-11-16.csv", table_type),
+            _ => format!("{}-17-up.csv", table_type)
         };
 
         let d_100 = DieRoll::new("d100").roll();
@@ -89,10 +89,11 @@ impl TreasureDefinition {
     }
 
     fn select(table_path: &str, d_100: u16) -> Option<TreasureDefinition> {
-        let full_path = format!("{}/{}", env::current_dir().expect("path").display(), table_path);
-        debug!("File: {}", full_path);
+        trace!("Selecting table: {}", table_path);
 
-        let mut reader = csv::Reader::from_path(full_path).expect("path reader");
+        let table_contents = Tables::get(table_path).expect("table");
+
+        let mut reader = csv::Reader::from_reader(table_contents.as_ref());
 
         for result in reader.deserialize() {
             let treasure_record: TreasureDefinition = result.unwrap();

@@ -5,6 +5,8 @@ extern crate fern;
 #[macro_use]
 extern crate log;
 extern crate rand;
+#[macro_use]
+extern crate rust_embed;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
