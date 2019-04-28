@@ -1,7 +1,7 @@
 - refactoring and duplication reduction
 - better error handling
 
-- figure out how to move tests to separate files
 - coalesce art/gems that are same description
 
 - add ability to roll random gems, art, magic, and coins alone
+- convert the hoard/individual to sub-commands rather than args

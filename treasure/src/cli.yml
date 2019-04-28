@@ -1,0 +1,23 @@
+name: treasure
+args:
+  - verbose:
+      short: v
+      multiple: true
+      help: Sets the level of verbosity
+  - individual:
+      long: individual
+      required: false
+      takes_value: false
+      help: Generates individual treasure (default).
+  - hoard:
+      long: horde
+      required: false
+      takes_value: false
+      help: Generates hoard treasure.
+  - cr:
+      short: c
+      long: cr
+      required: true
+      takes_value: true
+      value_name: CHALLENGE-RATING
+      help: Specifies the Challenge Rating.

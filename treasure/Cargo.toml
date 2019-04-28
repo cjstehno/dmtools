@@ -1,8 +1,9 @@
 [package]
 name = "treasure"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Christopher J. Stehno <chris@stehno.com>"]
 edition = "2018"
+description = "A table-based random treasure generator for D&D 5e."
 
 [dependencies]
 csv = "1"
@@ -10,6 +11,6 @@ serde = "1"
 serde_derive = "1"
 regex = "1"
 rand = "0.6.5"
-clap = "2.32.0"
+clap = {version = "2.32.0", features = ["yaml"]}
 log = "0.4"
 fern = "0.5.7"

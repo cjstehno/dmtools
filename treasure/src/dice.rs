@@ -2,6 +2,7 @@ extern crate regex;
 
 use std::fmt;
 
+use rand::distributions::{Distribution, Uniform};
 use regex::Regex;
 
 #[derive(Debug)]
@@ -57,9 +58,12 @@ impl DieRoll {
 
         let dice = &self;
 
+        let mut rng = rand::thread_rng();
+        let die = Uniform::from(1..dice.d + 1);
+
         // TODO: use fold iter here
         for _r in 0..dice.count {
-            let rolled = (rand::random::<u16>() % dice.d) + 1;
+            let rolled = die.sample(&mut rng);
             rolls += rolled;
         }
 
