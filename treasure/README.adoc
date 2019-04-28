@@ -26,20 +26,15 @@ The production artifact will be generated as `./target/release/treasure` (.exe f
 
 > This has been tested on Windows and Linux, but I make no promises.
 
-== Configuration
-
-The contents of the `tables` directory defined in this project must be installed along side
-the executable.
-
 == Usage
 
 ```
-Treasure Calculator 0.0.1
+treasure 0.1.0
 Christopher J. Stehno <chris@stehno.com>
-Calculates random treasure for D&D 5e.
+A table-based random treasure generator for D&D 5e.
 
 USAGE:
-    treasure.exe [FLAGS] --cr <CHALLENGE-RATING>
+    treasure [FLAGS] --cr <CHALLENGE-RATING>
 
 FLAGS:
     -h, --help          Prints help information
