@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt;
 
 use crate::valuables::Art;
@@ -11,7 +12,7 @@ pub struct Treasure {
     pub ep: u16,
     pub gp: u16,
     pub pp: u16,
-    pub gems: Vec<Gem>,
+    pub gems: HashMap<Gem, u8>,
     pub art: Vec<Art>,
     pub magic: Vec<MagicItem>,
 }
@@ -26,8 +27,8 @@ impl fmt::Display for Treasure {
             output.push_str("\n -- Gems --\n");
         }
 
-        for gem in self.gems.iter() {
-            output.push_str(format!("  - {} ({}gp)\n", gem.description, gem.value).as_str());
+        for (gem,count) in &(self.gems) {
+            output.push_str(format!("  - {} x {} ({}gp)\n", count, gem.description, gem.value).as_str());
         }
 
         if !self.art.is_empty() {
@@ -58,7 +59,7 @@ impl Treasure {
             ep: 0,
             gp: 0,
             pp: 0,
-            gems: vec![],
+            gems: HashMap::new(),
             art: vec![],
             magic: vec![],
         }

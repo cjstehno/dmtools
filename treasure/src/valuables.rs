@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::env;
 
 use crate::dice::DieRoll;
@@ -49,14 +50,16 @@ impl ValuableObject {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Hash)]
 pub struct Gem {
     pub value: u16,
     pub description: String,
 }
 
+impl Eq for Gem {}
+
 impl Gem {
-    pub fn roll_gems(count: u16, value: u16) -> Vec<Gem> {
+    pub fn roll_gems(count: u16, value: u16) -> HashMap<Gem, u8> {
         if count > 0 {
             let table_path = format!("tables/gems-{}gp.csv", value);
             let selection_die = DieRoll::new(match value {
@@ -71,16 +74,21 @@ impl Gem {
 
             debug!("Selecting {} {}gp gems", count, value);
 
-            let mut gems: Vec<Gem> = vec![];
+            let mut gems: HashMap<Gem, u8> = HashMap::new();
 
-            // FIXME: verify bounds!
-            for _n in 0..count {
+            for _n in 0..(count + 1) {
                 let die_value = selection_die.roll();
                 match ValuableObject::select(table_path.as_str(), die_value) {
                     Some(val_obj) => {
                         let gem = Gem { value, description: val_obj.description };
                         debug!("Selected gem: {:?}", gem);
-                        gems.push(gem)
+
+                        let gem_count = match gems.get(&gem) {
+                            Some(c) => *c,
+                            None => 0_u8
+                        } + 1;
+
+                        gems.insert(gem, gem_count);
                     }
                     None => ()
                 }
@@ -88,7 +96,7 @@ impl Gem {
 
             return gems;
         } else {
-            vec![]
+            HashMap::new()
         }
     }
 }
