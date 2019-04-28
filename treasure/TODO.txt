@@ -1,5 +1,0 @@
-- refactoring and duplication reduction
-- better error handling
-
-- add ability to roll random gems, art, magic, and coins alone
-
