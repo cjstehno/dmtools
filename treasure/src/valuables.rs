@@ -101,14 +101,16 @@ impl Gem {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Hash)]
 pub struct Art {
     pub value: u16,
     pub description: String,
 }
 
+impl Eq for Art {}
+
 impl Art {
-    pub fn roll_art(count: u16, value: u16) -> Vec<Art> {
+    pub fn roll_art(count: u16, value: u16) -> HashMap<Art, u8> {
         if count > 0 {
             let table_path = format!("tables/art-{}gp.csv", value);
             let selection_die = DieRoll::new(match value {
@@ -122,16 +124,21 @@ impl Art {
 
             debug!("Selecting {} {}gp artwork", count, value);
 
-            let mut arts: Vec<Art> = vec![];
+            let mut arts: HashMap<Art, u8> = HashMap::new();
 
-            // FIXME: verify bounds!
-            for _n in 0..count {
+            for _n in 0..(count + 1) {
                 let die_value = selection_die.roll();
                 match ValuableObject::select(table_path.as_str(), die_value) {
                     Some(val_obj) => {
                         let art = Art { value, description: val_obj.description };
                         debug!("Selected artwork: {:?}", art);
-                        arts.push(art)
+
+                        let art_count = match arts.get(&art) {
+                            Some(c) => *c,
+                            None => 0
+                        } + 1;
+
+                        arts.insert(art, art_count);
                     }
                     None => ()
                 }
@@ -139,43 +146,52 @@ impl Art {
 
             return arts;
         } else {
-            vec![]
+            HashMap::new()
         }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Hash)]
 pub struct MagicItem {
     pub description: String
 }
 
-impl MagicItem {
-    pub fn roll_magic(count: u16, table: &str, count_2: u16, table_2: &str) -> Vec<MagicItem> {
-        let mut first_table = MagicItem::roll_magic_table(count, table);
-        let mut second_table = MagicItem::roll_magic_table(count_2, table_2);
+impl Eq for MagicItem {}
 
-        first_table.append(&mut second_table);
+impl MagicItem {
+    pub fn roll_magic(count: u16, table: &str, count_2: u16, table_2: &str) -> HashMap<MagicItem, u8> {
+        let mut first_table = MagicItem::roll_magic_table(count, table);
+        let second_table = MagicItem::roll_magic_table(count_2, table_2);
+
+        for (item, count) in second_table {
+            first_table.insert(item, count);
+        }
 
         return first_table;
     }
 
-    fn roll_magic_table(count: u16, table: &str) -> Vec<MagicItem> {
+    fn roll_magic_table(count: u16, table: &str) -> HashMap<MagicItem, u8> {
         if count > 0 {
             let table_path = format!("tables/magic-{}.csv", table);
             let selection_die = DieRoll::new("d100");
 
             debug!("Selecting {} magic items (Table {})", count, table);
 
-            let mut magic_items: Vec<MagicItem> = vec![];
+            let mut magic_items: HashMap<MagicItem, u8> = HashMap::new();
 
-            // FIXME: verify bounds!
-            for _n in 0..count {
+            for _n in 0..(count + 1) {
                 let die_value = selection_die.roll();
                 match ValuableObject::select(table_path.as_str(), die_value) {
                     Some(val_obj) => {
                         let item = MagicItem { description: val_obj.description };
                         debug!("Selected magic item: {:?}", item);
-                        magic_items.push(item)
+
+                        let item_count = match magic_items.get(&item) {
+                            Some(c) => *c,
+                            None => 0
+                        } + 1;
+
+                        magic_items.insert(item, item_count);
                     }
                     None => ()
                 }
@@ -183,7 +199,7 @@ impl MagicItem {
 
             return magic_items;
         } else {
-            vec![]
+            HashMap::new()
         }
     }
 }

@@ -1,7 +1,5 @@
 - refactoring and duplication reduction
 - better error handling
 
-- coalesce art/gems that are same description
-
 - add ability to roll random gems, art, magic, and coins alone
 

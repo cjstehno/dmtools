@@ -13,8 +13,8 @@ pub struct Treasure {
     pub gp: u16,
     pub pp: u16,
     pub gems: HashMap<Gem, u8>,
-    pub art: Vec<Art>,
-    pub magic: Vec<MagicItem>,
+    pub art: HashMap<Art, u8>,
+    pub magic: HashMap<MagicItem, u8>,
 }
 
 impl fmt::Display for Treasure {
@@ -27,7 +27,7 @@ impl fmt::Display for Treasure {
             output.push_str("\n -- Gems --\n");
         }
 
-        for (gem,count) in &(self.gems) {
+        for (gem, count) in self.gems.iter() {
             output.push_str(format!("  - {} x {} ({}gp)\n", count, gem.description, gem.value).as_str());
         }
 
@@ -35,16 +35,16 @@ impl fmt::Display for Treasure {
             output.push_str("\n -- Artwork --\n");
         }
 
-        for art in self.art.iter() {
-            output.push_str(format!("  - {} ({}gp)\n", art.description, art.value).as_str());
+        for (art, count) in self.art.iter() {
+            output.push_str(format!("  - {} x {} ({}gp)\n", count, art.description, art.value).as_str());
         }
 
         if !self.magic.is_empty() {
             output.push_str("\n -- Magic Items --\n");
         }
 
-        for item in self.magic.iter() {
-            output.push_str(format!("  - {}\n", item.description).as_str());
+        for (item, count) in self.magic.iter() {
+            output.push_str(format!("  - {} x {}\n", count, item.description).as_str());
         }
 
         write!(f, "{}", output)
@@ -60,8 +60,8 @@ impl Treasure {
             gp: 0,
             pp: 0,
             gems: HashMap::new(),
-            art: vec![],
-            magic: vec![],
+            art: HashMap::new(),
+            magic: HashMap::new(),
         }
     }
 }
