@@ -1,9 +1,9 @@
 use std::env;
 
 use crate::dice::DieRoll;
-use crate::gems::Gem;
-use crate::gems::Art;
-use crate::gems::MagicItem;
+use crate::valuables::Gem;
+use crate::valuables::Art;
+use crate::valuables::MagicItem;
 use crate::treasure::Treasure;
 
 #[derive(Debug, Deserialize)]

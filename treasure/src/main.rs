@@ -16,7 +16,7 @@ use crate::treasure_definition::TreasureDefinition;
 mod treasure;
 mod treasure_definition;
 mod dice;
-mod gems; // TODO: rename to jewelry?
+mod valuables;
 
 fn main() {
     let yaml = load_yaml!("cli.yml");

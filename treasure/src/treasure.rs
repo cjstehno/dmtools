@@ -1,8 +1,8 @@
 use std::fmt;
 
-use crate::gems::Art;
-use crate::gems::Gem;
-use crate::gems::MagicItem;
+use crate::valuables::Art;
+use crate::valuables::Gem;
+use crate::valuables::MagicItem;
 
 #[derive(Debug)]
 pub struct Treasure {
@@ -13,7 +13,7 @@ pub struct Treasure {
     pub pp: u16,
     pub gems: Vec<Gem>,
     pub art: Vec<Art>,
-    pub magic: Vec<MagicItem>
+    pub magic: Vec<MagicItem>,
 }
 
 impl fmt::Display for Treasure {
@@ -22,7 +22,7 @@ impl fmt::Display for Treasure {
 
         output.push_str(format!("  - {}cp, {}sp, {}ep, {}gp, {}pp\n", self.cp, self.sp, self.ep, self.gp, self.pp).as_str());
 
-        if !self.gems.is_empty(){
+        if !self.gems.is_empty() {
             output.push_str("\n -- Gems --\n");
         }
 
@@ -30,7 +30,7 @@ impl fmt::Display for Treasure {
             output.push_str(format!("  - {} ({}gp)\n", gem.description, gem.value).as_str());
         }
 
-        if !self.art.is_empty(){
+        if !self.art.is_empty() {
             output.push_str("\n -- Artwork --\n");
         }
 
