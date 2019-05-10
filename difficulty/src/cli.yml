@@ -6,7 +6,23 @@ args:
       takes_value: false
       required: false
       multiple: true
-      help: Sets the level of verbosity
+      help: Sets the level of verbosity.
+  - party-size:
+      short: p
+      long: party-size
+      takes_value: true
+      value_name: SIZE
+      required: false
+      multiple: false
+      help: The number of characters in party (defaults to 4).
+  - party-level:
+      short: l
+      long: party-level
+      takes_value: true
+      value_name: LEVEL
+      required: false
+      multiple: false
+      help: The level of the characters in the party (defaults to all).
   - cr-0:
       long: cr-0
       takes_value: true

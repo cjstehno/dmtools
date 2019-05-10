@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use crate::difficulty::DifficultyRating::{Deadly, Easy, Hard, Medium};
+
+#[derive(Debug, PartialEq)]
 pub enum DifficultyRating {
     Easy,
     Medium,
@@ -6,147 +8,155 @@ pub enum DifficultyRating {
     Deadly,
 }
 
-pub struct Challenger {
+#[derive(Debug)]
+pub struct Monster {
     pub cr: String,
     pub count: u8,
 }
 
-pub fn calculate_difficulty(level: u8, challengers: &Vec<Challenger>) -> DifficultyRating {
-    let effective_xp = calculate_effective_xp(challengers);
-    resolve_difficulty(level, effective_xp)
-}
+const GROUP_MULTIPLIERS: [f32;6] = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0];
 
-fn calculate_effective_xp(challengers: &Vec<Challenger>) -> u16 {
-    let mut total_xp: f32 = 0.0;
-    let mut challenger_count = 0;
+pub fn calculate_difficulty(party_level: u8, party_size: u8, monsters: &Vec<Monster>) -> DifficultyRating {
+    let xp_thresholds = calculate_xp_thresholds(party_level, party_size);
+    debug!("XP-Thresholds: {:?}", xp_thresholds);
 
-    for chall in challengers.iter() {
-        total_xp = total_xp + fetch_xp_for_cr(chall.cr.as_str()) * (chall.count as f32);
-        challenger_count += chall.count;
-    }
+    let monster_xp_total = calculate_monster_xp(party_size, monsters);
+    debug!("Monsters-XP: {}", monster_xp_total);
 
-    let multiplier = resolve_multiplier(challenger_count);
+    // find DR that matches or is closest to but lower than monster xp
+    match xp_thresholds.iter().enumerate().filter(|(_,x)| { monster_xp_total <= **x }).rev().last() {
+        Some((idx,xp)) => {
+            debug!("Found threshold: ({}, {})", idx, xp);
 
-    (total_xp * multiplier) as u16
-}
-
-fn fetch_xp_for_cr(cr: &str) -> f32 {
-    match cr {
-        "0" => 10_f32,
-        "1/8" => 25_f32,
-        "1/4" => 50_f32,
-        "1/2" => 100_f32,
-        "1" => 200_f32,
-        "2" => 450_f32,
-        "3" => 700_f32,
-        "4" => 1100_f32,
-        "5" => 1800_f32,
-        "6" => 2300_f32,
-        "7" => 2900_f32,
-        "8" => 3900_f32,
-        "9" => 5000_f32,
-        "10" => 5900_f32,
-        "11" => 7200_f32,
-        "12" => 8400_f32,
-        "13" => 10000_f32,
-        "14" => 11500_f32,
-        "15" => 11500_f32,
-        "16" => 15000_f32,
-        "17" => 18000_f32,
-        "18" => 20000_f32,
-        "19" => 22000_f32,
-        "20" => 25000_f32,
-        "21" => 33000_f32,
-        "22" => 41000_f32,
-        "23" => 50000_f32,
-        "24" => 62000_f32,
-        "25" => 75000_f32,
-        "26" => 90000_f32,
-        "27" => 105000_f32,
-        "28" => 120000_f32,
-        "29" => 135000_f32,
-        "30" => 155000_f32,
-        _ => panic!(format!("Invalid CR value: {}", cr))
+            match idx {
+                0 => Easy,
+                1 => Medium,
+                2 => Hard,
+                _ => Deadly
+            }
+        },
+        None => Deadly
     }
 }
 
-fn resolve_multiplier(challenger_count: u8) -> f32 {
-    match challenger_count {
-        0 => 0.0,
-        1 => 1.0,
-        2 => 1.5,
-        3 => 2.0,
-        4 => 2.0,
-        5 => 2.0,
-        6 => 2.0,
-        7 => 2.5,
-        8 => 2.5,
-        9 => 2.5,
-        10 => 2.5,
-        11 => 3.0,
-        12 => 3.0,
-        13 => 3.0,
-        14 => 3.0,
-        _ => 4.0
+fn calculate_xp_thresholds(party_level:u8, party_size:u8) -> [u32;4] {
+    let thresholds = match party_level {
+        1 => [25, 50,75, 100],
+        2 => [50,100,150,200],
+        3 => [75,150,225, 400],
+        4 => [125, 250, 375,500],
+        5 => [250, 500, 750, 1100],
+        6 => [300,600,900,1400],
+        7 => [350,750,1100,1700],
+        8 => [450, 900, 1400, 2100],
+        9 => [550, 1100, 1600, 2400],
+        10 => [600, 1200, 1900, 2800],
+        11 => [800, 1600, 2400, 3600],
+        12 => [1000, 2000, 3000, 4500],
+        13 => [1100, 2200, 3400, 5100],
+        14 => [1250, 2500, 3800, 5700],
+        15 => [1400, 2800, 4300, 6400],
+        16 => [1600, 3200, 4800, 7200],
+        17 => [2000, 3900, 5900, 8800],
+        18 => [2100, 4200, 6300, 9500],
+        19 => [2400, 4900, 7300, 10900],
+        20 => [2800, 5700, 8500, 12700],
+        _ => panic!(format!("Invalid party level ({}) specified!", party_level))
+    };
+
+    let party_size = party_size as u32;
+    [thresholds[0] * party_size, thresholds[1] * party_size, thresholds[2] * party_size, thresholds[3] * party_size]
+}
+
+fn calculate_monster_xp(party_size: u8, monsters: &Vec<Monster>) -> u32 {
+    // sum xp of all monsters
+    let raw_xp_total : u32 = monsters.iter().map(|m| { resolve_xp(&m.cr) * m.count as u32 }).sum();
+
+    // resolve multiplier and with party_size adjustment
+    let multiplier = resolve_multiplier(party_size, monsters.len() as u8);
+
+    // apply multiplier to monster xp and return
+    (raw_xp_total as f32 * multiplier) as u32
+}
+
+fn resolve_xp(cr: &String) -> u32 {
+    match cr.as_str() {
+        "0" => 10,
+        "1/8" => 25,
+        "1/4" => 50,
+        "1/2" => 100,
+        "1" => 200,
+        "2" => 450,
+        "3" => 700,
+        "4" => 1100,
+        "5" => 1800,
+        "6" => 2300,
+        "7" => 2900,
+        "8" => 3900,
+        "9" => 5000,
+        "10" => 5900,
+        "11" => 7200,
+        "12" => 8400,
+        "13" => 10000,
+        "14" => 11500,
+        "15" => 13000,
+        "16" => 15000,
+        "17" => 18000,
+        "18" => 20000,
+        "19" => 22000,
+        "20" => 25000,
+        "21" => 33000,
+        "22" => 41000,
+        "23" => 50000,
+        "24" => 62000,
+        "25" => 75000,
+        "26" => 90000,
+        "27" => 105000,
+        "28" => 120000,
+        "29" => 135000,
+        "30" => 155000,
+        _ => panic!(format!("Invalid CR specified: {}", cr))
     }
 }
 
-fn resolve_difficulty(level: u8, challenger_xp: u16) -> DifficultyRating {
-    let level_thresholds = resolve_difficulty_values(level);
+fn resolve_multiplier(party_size: u8, monster_count: u8) -> f32 {
+    let mut multiplier_index = match monster_count {
+        1 => 0,
+        2 => 1,
+        3...6 => 2,
+        7...10 => 3,
+        11...14 => 4,
+        _ => 5
+    };
 
-    for (thresh, idx) in level_thresholds.iter().rev().enumerate() {
-        if thresh < (challenger_xp as usize) {
-            return match idx {
-                0 => DifficultyRating::Deadly,
-                1 => DifficultyRating::Hard,
-                2 => DifficultyRating::Medium,
-                _ => DifficultyRating::Easy
-            };
-        }
+    if party_size < 3 && multiplier_index < 5 {
+        multiplier_index = multiplier_index +  1;
+    } else if party_size > 6 && multiplier_index > 0 {
+        multiplier_index = multiplier_index - 1;
     }
 
-    panic!("Unable to calculate difficulty!");
-}
-
-fn resolve_difficulty_values(level: u8) -> [u16; 4] {
-    match level {
-        1 => [100, 200, 300, 400],
-        2 => [200, 400, 636, 800],
-        3 => [300, 600, 900, 1600],
-        4 => [500, 1000, 1500, 2000],
-        5 => [1000, 2000, 3000, 4400],
-        6 => [1200, 2400, 3600, 5600],
-        7 => [1400, 3000, 4400, 6800],
-        8 => [1800, 3600, 5600, 8400],
-        9 => [2200, 4400, 6400, 9600],
-        10 => [2400, 4800, 7600, 11200],
-        11 => [3200, 6400, 9600, 14400],
-        12 => [4000, 8000, 12000, 18000],
-        13 => [4400, 8800, 13600, 20400],
-        14 => [5000, 10000, 15200, 22800],
-        15 => [5600, 11200, 17200, 25600],
-        16 => [6400, 12800, 19200, 28800],
-        17 => [8000, 15600, 23600, 35200],
-        18 => [8400, 16800, 25200, 38000],
-        19 => [9600, 19600, 29200, 43600],
-        20 => [11200, 22800, 34400, 50800],
-        21 => [12000, 24000, 36000, 54000],
-        _ => panic!(format!("Invalid level value: {}", level))
-    }
+    GROUP_MULTIPLIERS[multiplier_index]
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::difficulty::{calculate_difficulty, Challenger};
+    use crate::difficulty::{calculate_difficulty, Monster};
+    use crate::difficulty::DifficultyRating::{Deadly, Medium};
 
-    #[test]
-    fn calculate_single_challenger() {
-        let challengers = vec![Challenger { cr: String::from("10"), count: 4 }];
+    #[test] fn calculate_single_challenger() {
+        let challengers = vec![Monster { cr: "1".to_string(), count: 1 }];
 
-        let diff = calculate_difficulty(1, &challengers);
-        something is wrong... need some values from the other app to compare
+        let diff = calculate_difficulty(1, 1, &challengers);
 
-        println!("{:?}", diff);
+        assert_eq!(Deadly, diff);
+    }
+
+    #[test] fn calculate_4_party_single_monster() {
+        let challengers = vec![Monster { cr: "1".to_string(), count: 1 }];
+
+        let diff = calculate_difficulty(1, 4, &challengers);
+
+        assert_eq!(Medium, diff);
     }
 }
 
