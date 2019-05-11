@@ -1,0 +1,3 @@
+# Difficulty Calculator
+
+A simple encounter difficulty calculator for D&D 5e written in Rust.

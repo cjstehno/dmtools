@@ -27,7 +27,7 @@ fn main() {
 
     let mut table = Table::new();
 
-    table.add_row(row!("Level", "Difficulty"));
+    table.add_row(row!("Tier", "Level", "Difficulty"));
 
     match matches.value_of("party-level"){
         Some(level) => render_single(level, party_size, &monsters, &mut table),
@@ -53,6 +53,12 @@ fn render_multiple(party_size: u8, monsters: &Vec<Monster>, table: &mut Table) {
 
 fn render(level: u8, dr: &DifficultyRating, table: &mut Table){
     table.add_row(Row::new(vec![
+        Cell::new(match level {
+            1...4 => "1",
+            5...10 => "2",
+            11...16 => "3",
+            _ => "4"
+        }).with_style(Attr::Bold),
         Cell::new(format!("{}", level).as_str()),
         Cell::new(dr.to_string().as_str()).with_style(match dr {
             DifficultyRating::Easy => Attr::ForegroundColor(color::BLUE),
