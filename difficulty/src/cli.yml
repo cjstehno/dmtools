@@ -1,4 +1,4 @@
-name: treasure
+name: difficulty
 args:
   - verbose:
       short: v
