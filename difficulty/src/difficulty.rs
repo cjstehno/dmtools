@@ -1,3 +1,5 @@
+use std::fmt::{Display, Error, Result, Formatter};
+
 use crate::difficulty::DifficultyRating::{Deadly, Easy, Hard, Medium};
 
 #[derive(Debug, PartialEq)]
@@ -6,6 +8,20 @@ pub enum DifficultyRating {
     Medium,
     Hard,
     Deadly,
+}
+
+impl Display for DifficultyRating {
+
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        f.write_str(match self {
+            Easy => "Easy",
+            Medium => "Medium",
+            Hard => "Hard",
+            Deadly => "Deadly"
+        }).expect("Unable to display DifficultyRating.");
+
+        Ok(())
+    }
 }
 
 #[derive(Debug)]
@@ -158,5 +174,7 @@ mod tests {
 
         assert_eq!(Medium, diff);
     }
+
+    // FIXME: more tests
 }
 

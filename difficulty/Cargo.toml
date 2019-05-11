@@ -9,3 +9,4 @@ description = "A D&D 5e encounter difficulty calculator."
 clap = {version = "2.32.0", features = ["yaml"]}
 log = "0.4"
 fern = "0.5.7"
+prettytable-rs = "0.8.0"

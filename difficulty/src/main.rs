@@ -1,12 +1,12 @@
-#[macro_use]
-extern crate clap;
+#[macro_use] extern crate clap;
 extern crate fern;
-#[macro_use]
-extern crate log;
+#[macro_use] extern crate log;
+#[macro_use] extern crate prettytable;
 
 use clap::{App, ArgMatches};
+use prettytable::{Attr, Cell, color, Row, Table};
 
-use crate::difficulty::{calculate_difficulty, Monster};
+use crate::difficulty::{calculate_difficulty, DifficultyRating, Monster};
 
 mod difficulty;
 
@@ -25,21 +25,46 @@ fn main() {
 
     let monsters = gather_monsters(&matches);
 
+    let mut table = Table::new();
+
+    table.add_row(row!("Level", "Difficulty"));
+
     match matches.value_of("party-level"){
-        Some(level) => {
-            // generate for single level
-            let party_level = level.parse::<u8>().expect("Unable to parse party level");
-            let rating = calculate_difficulty(party_level, party_size, &monsters);
-            println!("[{}] {:?}", level, rating);
-        },
-        None => {
-            // generate for all levels
-            for level in 1..21 {
-                let rating = calculate_difficulty(level, party_size, &monsters);
-                println!("[{}] {:?}", level , rating);
-            }
-        }
+        Some(level) => render_single(level, party_size, &monsters, &mut table),
+        None => render_multiple(party_size, &monsters, &mut table)
     };
+
+    table.printstd();
+}
+
+fn render_single(level: &str, party_size: u8, monsters: &Vec<Monster>, table: &mut Table){
+    let party_level = level.parse::<u8>().expect("Unable to parse party level");
+    let rating = calculate_difficulty(party_level, party_size, &monsters);
+
+    render(party_level, &rating, table);
+}
+
+fn render_multiple(party_size: u8, monsters: &Vec<Monster>, table: &mut Table) {
+    for level in 1..21 {
+        let rating = calculate_difficulty(level, party_size, &monsters);
+        render(level, &rating, table);
+    }
+}
+
+fn render(level: u8, dr: &DifficultyRating, table: &mut Table){
+    table.add_row(Row::new(vec![
+        Cell::new(format!("{}", level).as_str()),
+        Cell::new(dr.to_string().as_str()).with_style(color_for(&dr))
+    ]));
+}
+
+fn color_for(dr: &DifficultyRating) -> Attr {
+    match dr {
+        DifficultyRating::Easy => Attr::ForegroundColor(color::BLUE),
+        DifficultyRating::Medium => Attr::ForegroundColor(color::CYAN),
+        DifficultyRating::Hard => Attr::ForegroundColor(color::YELLOW),
+        DifficultyRating::Deadly => Attr::ForegroundColor(color::RED)
+    }
 }
 
 fn append_cr(monsters: &mut Vec<Monster>, matches: &ArgMatches, cr_n: &str){
