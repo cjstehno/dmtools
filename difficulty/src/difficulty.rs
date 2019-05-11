@@ -1,4 +1,4 @@
-use std::fmt::{Display, Error, Result, Formatter};
+use std::fmt::{Display, Result, Formatter};
 
 use crate::difficulty::DifficultyRating::{Deadly, Easy, Hard, Medium};
 

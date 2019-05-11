@@ -54,17 +54,13 @@ fn render_multiple(party_size: u8, monsters: &Vec<Monster>, table: &mut Table) {
 fn render(level: u8, dr: &DifficultyRating, table: &mut Table){
     table.add_row(Row::new(vec![
         Cell::new(format!("{}", level).as_str()),
-        Cell::new(dr.to_string().as_str()).with_style(color_for(&dr))
+        Cell::new(dr.to_string().as_str()).with_style(match dr {
+            DifficultyRating::Easy => Attr::ForegroundColor(color::BLUE),
+            DifficultyRating::Medium => Attr::ForegroundColor(color::CYAN),
+            DifficultyRating::Hard => Attr::ForegroundColor(color::YELLOW),
+            DifficultyRating::Deadly => Attr::ForegroundColor(color::RED)
+        })
     ]));
-}
-
-fn color_for(dr: &DifficultyRating) -> Attr {
-    match dr {
-        DifficultyRating::Easy => Attr::ForegroundColor(color::BLUE),
-        DifficultyRating::Medium => Attr::ForegroundColor(color::CYAN),
-        DifficultyRating::Hard => Attr::ForegroundColor(color::YELLOW),
-        DifficultyRating::Deadly => Attr::ForegroundColor(color::RED)
-    }
 }
 
 fn append_cr(monsters: &mut Vec<Monster>, matches: &ArgMatches, cr_n: &str){
